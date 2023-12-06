@@ -210,8 +210,15 @@ const getPosts = async (req, res) => {
  * @param {import("express").Response} res
  */
 const getAllTags = async (req, res) => {
-    const result = await Post.aggregate([{ $group: { _id: '$tags' } }]);
-    res.status(200).json(new ApiResponse(200, { posts: result }, 'successfully fetched all tags'));
+    const result = await Post.aggregate([
+        { $unwind: '$tags' },
+        { $group: { _id: '$tags', count: { $sum: 1 }, posts: { $push: '$_id' } } },
+        { $set: { tag: '$_id' } },
+        { $unset: ['_id'] },
+        { $sort: { count: -1 } },
+        { $limit: 5 },
+    ]);
+    res.status(200).json(new ApiResponse(200, { tags: result }, 'successfully fetched all tags'));
 };
 
 const getUsersPosts = async (req, res) => {};

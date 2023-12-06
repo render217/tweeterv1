@@ -140,6 +140,9 @@ export const useCreatePost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ALL_TAGS],
+      });
     },
   });
 };
@@ -203,8 +206,8 @@ export const useBookmarkUnBookmarkPost = () => {
 };
 export const useGetAllTags = () => {
   return useQuery({
-    queryKey: [],
-    queryFn: () => {},
+    queryKey: [QUERY_KEYS.GET_ALL_TAGS],
+    queryFn: () => getAllTags(),
   });
 };
 
