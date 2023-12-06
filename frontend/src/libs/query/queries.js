@@ -129,6 +129,9 @@ export const useCreatePost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_EXPLORE],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE],
+      });
     },
   });
 };
@@ -150,6 +153,9 @@ export const useLikeDislikePost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_EXPLORE],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE],
+      });
     },
   });
 };
@@ -164,6 +170,9 @@ export const useRetweetDetweetPost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_EXPLORE],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE],
+      });
     },
   });
 };
@@ -177,6 +186,9 @@ export const useBookmarkUnBookmarkPost = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_EXPLORE],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE],
       });
     },
   });
@@ -214,6 +226,9 @@ export const useAddComment = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_EXPLORE],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE],
+      });
     },
   });
 };
@@ -232,6 +247,9 @@ export const useLikeDislikeComment = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_EXPLORE],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE],
       });
     },
   });

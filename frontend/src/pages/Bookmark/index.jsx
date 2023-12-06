@@ -21,7 +21,6 @@ export default function Bookmark() {
   const { user } = useAuth();
 
   const location = useLocation();
-  console.log(location);
 
   if (location.pathname === "/bookmark") {
     userId = user._id;

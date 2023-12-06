@@ -11,10 +11,10 @@ import TweetExploreFeed from "../../components/Tweet/TweetExploreFeed";
 
 export default function Explore() {
   const options = [
-    { id: 1, link: "top" },
-    { id: 2, link: "latest" },
-    { id: 3, link: "people" },
-    { id: 4, link: "media" },
+    { id: 1, link: "Top" },
+    { id: 2, link: "Latest" },
+    { id: 3, link: "People" },
+    { id: 4, link: "Media" },
   ];
   const [selected, setSelected] = useState(1);
   const onSelect = (selectedId) => {

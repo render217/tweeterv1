@@ -4,6 +4,7 @@ import { LoadingProgress } from "../Loading";
 import TweetCard from "./TweetCard";
 
 export default function TweetBookmarkFeed({ type, userId }) {
+  console.log({ type, userId });
   const {
     data: axiosResponse,
     isPending,
@@ -29,6 +30,7 @@ export default function TweetBookmarkFeed({ type, userId }) {
       </>
     );
   }
+  console.log("axiosReponse", axiosResponse);
   return (
     <div className="my-2 min-h-[500px]">
       {axiosResponse.data.payload.posts.length === 0 && <h1>NO Tweet Yet.</h1>}
