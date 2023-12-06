@@ -42,12 +42,12 @@ export default function CreateTweet() {
     e.preventDefault();
 
     const tags = filterForTagFromContent(tweet);
-    console.log("tweet payload", {
-      content: tweet,
-      image: tweetImage,
-      audience: audience,
-      tags: tags,
-    });
+    // console.log("tweet payload", {
+    //   content: tweet,
+    //   image: tweetImage,
+    //   audience: audience,
+    //   tags: tags,
+    // });
     const formData = new FormData();
     formData.append("content", tweet);
     formData.append("audience", audience);
@@ -55,6 +55,7 @@ export default function CreateTweet() {
     formData.append("tags", tags);
     try {
       const { data } = await uploadPost(formData);
+      console.log("createTweet Response", data);
       toast.success(data?.message);
     } catch (error) {
       console.log(error);

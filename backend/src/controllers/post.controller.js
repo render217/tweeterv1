@@ -43,7 +43,7 @@ const createPost = async (req, res) => {
             content: content,
             audience: audience,
             author: userId,
-            tags: tags.length > 0 ? tags : [],
+            tags: tags.length > 0 ? [...tags.split(',')] : [],
         });
         const image = req.file;
         if (image) {
@@ -204,9 +204,17 @@ const getPosts = async (req, res) => {
     );
 };
 
-const getUsersPosts = async (req, res) => {};
-const getAllTags = async (req, res) => {};
+/**
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const getAllTags = async (req, res) => {
+    const result = await Post.aggregate([{ $group: { _id: '$tags' } }]);
+    res.status(200).json(new ApiResponse(200, { posts: result }, 'successfully fetched all tags'));
+};
 
+const getUsersPosts = async (req, res) => {};
 // const updatePost = async (req, res) => {};
 // const deletePost = async (req, res) => {};
 // const getBookmarkedPosts = async (req, res) => {};
