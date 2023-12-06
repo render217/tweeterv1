@@ -119,3 +119,15 @@ export const likeDislikeComment = (postId, commentId) => {
 // export const updateComment = (postId, commentId, payload) => {
 //   return API.patch(`/comment/${postId}/update/${commentId}`, payload);
 // };
+
+// ============================================================
+// EXPLORE ROUTES
+// ============================================================
+export const explore = ({ type, search }) => {
+  console.log("query", { type, search });
+  return API.get(`/explore?q=${type}&search=${search}`);
+};
+
+export const bookmarkExplore = ({ type, userId }) => {
+  return API.get(`/bookmark/${userId}?q=${type}`);
+};

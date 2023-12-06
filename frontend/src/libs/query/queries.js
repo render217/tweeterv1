@@ -29,7 +29,9 @@ import {
   //
   getComments, // done  | pagination
   addComment, // done
-  likeDislikeComment, // done
+  likeDislikeComment,
+  explore,
+  bookmarkExplore, // done
 } from "../api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -124,6 +126,9 @@ export const useCreatePost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_ALL_POSTS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_EXPLORE],
+      });
     },
   });
 };
@@ -142,6 +147,9 @@ export const useLikeDislikePost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_ALL_POSTS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_EXPLORE],
+      });
     },
   });
 };
@@ -153,6 +161,9 @@ export const useRetweetDetweetPost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_ALL_POSTS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_EXPLORE],
+      });
     },
   });
 };
@@ -163,6 +174,9 @@ export const useBookmarkUnBookmarkPost = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_ALL_POSTS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_EXPLORE],
       });
     },
   });
@@ -197,6 +211,9 @@ export const useAddComment = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_COMMENTS, postId],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_EXPLORE],
+      });
     },
   });
 };
@@ -212,6 +229,9 @@ export const useLikeDislikeComment = () => {
       const postId = axiosResponse.data.payload.comment.post;
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_COMMENTS, postId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_EXPLORE],
       });
     },
   });
@@ -229,3 +249,22 @@ export const useLikeDislikeComment = () => {
 //     queryFn: () => {},
 //   });
 // };
+
+// ============================================================
+// Explore and Bookmark QUERIES
+// ============================================================
+export const useExplore = ({ type, search }) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_EXPLORE, type],
+    queryFn: () => explore({ type, search }),
+    enabled: !!type,
+  });
+};
+
+export const useBookmarkExplore = ({ type, userId }) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE, userId, type],
+    queryFn: () => bookmarkExplore({ type, userId }),
+    enabled: !!userId && !!type,
+  });
+};

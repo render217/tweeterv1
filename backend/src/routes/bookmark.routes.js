@@ -7,6 +7,6 @@ const { checkAuth } = require('../middleware/checkAuth');
 router.use(checkAuth);
 // base = /api/v1/bookmark
 
-router.route('/').get(getBookmarkFn);
+router.route('/:userId').get(getBookmarkFn);
 
 module.exports = router;

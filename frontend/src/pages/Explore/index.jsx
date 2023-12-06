@@ -7,13 +7,14 @@ import { LoadingProgress } from "../../components/Loading";
 import TweetFeed from "../../components/Tweet/TweetFeed";
 
 import AllUsers from "../../components/Users/AllUsers";
+import TweetExploreFeed from "../../components/Tweet/TweetExploreFeed";
 
 export default function Explore() {
   const options = [
-    { id: 1, link: "Top" },
-    { id: 2, link: "Latest" },
-    { id: 3, link: "People" },
-    { id: 4, link: "Media" },
+    { id: 1, link: "top" },
+    { id: 2, link: "latest" },
+    { id: 3, link: "people" },
+    { id: 4, link: "media" },
   ];
   const [selected, setSelected] = useState(1);
   const onSelect = (selectedId) => {
@@ -36,14 +37,22 @@ export default function Explore() {
             onChange={(e) => setSearch(e.target.value)}
             onSubmit={handleSearch}
           />
-          <div className={`my-2 ${loading ? "visible" : "invisible"}`}>
+          <div className={`my-1 ${loading ? "visible" : "invisible"}`}>
             <LoadingProgress />
           </div>
 
-          {selected === 1 && <TweetFeed />}
-          {selected === 2 && <TweetFeed />}
-          {selected === 4 && <TweetFeed />}
-          {selected === 3 && <AllUsers />}
+          {selected === 1 && (
+            <TweetExploreFeed type={options[0].link} search={search} />
+          )}
+          {selected === 2 && (
+            <TweetExploreFeed type={options[1].link} search={search} />
+          )}
+          {selected === 3 && (
+            <AllUsers type={options[2].link} search={search} />
+          )}
+          {selected === 4 && (
+            <TweetExploreFeed type={options[3].link} search={search} />
+          )}
         </div>
       </div>
     </PageWrapper>

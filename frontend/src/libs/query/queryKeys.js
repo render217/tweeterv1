@@ -21,4 +21,9 @@ export const QUERY_KEYS = {
   LIKE_DISLIKE_COMMENT: "likeDislikeComment",
   // DELETE_COMMENT: "deleteComment",
   // UPDATE_COMMENT: "updateComment",
+
+  // Explore and bookmark search filter keys
+  GET_EXPLORE: "getExplore",
+  //
+  GET_BOOKMARK_EXPLORE: "getBookmarkExplore",
 };

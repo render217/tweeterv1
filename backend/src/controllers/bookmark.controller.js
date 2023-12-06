@@ -11,9 +11,39 @@ const { default: mongoose } = require('mongoose');
  * @param {import("express").Response} res
  */
 const getBookmarkFn = async (req, res) => {
+    console.log('query', req.query);
+    console.log('params', req.params);
+
     const userId = req.params.userId;
-    const explore = req.query.bookmark;
-    res.status(200).json(new ApiResponse(200, {}, 'bookmarked fetched...'));
+    const explore = req.query.q;
+
+    switch (explore.toLocaleLowerCase()) {
+        case 'Tweets':
+        case 'tweets':
+            const tweets = await Post.aggregate([{ $match: { $or: [{}, {}, {}] } }]);
+            return res
+                .status(200)
+                .json(new ApiResponse(200, { posts: [] }, 'bookmarked fetched...'));
+        case 'TweetsAndReplies':
+        case 'tweetsAndReplies':
+            return res
+                .status(200)
+                .json(new ApiResponse(200, { posts: [] }, 'bookmarked fetched...'));
+        case 'Media':
+        case 'media':
+            return res
+                .status(200)
+                .json(new ApiResponse(200, { posts: [] }, 'bookmarked fetched...'));
+        case 'Likes':
+        case 'likes':
+            return res
+                .status(200)
+                .json(new ApiResponse(200, { posts: [] }, 'bookmarked fetched...'));
+        default:
+            return res
+                .status(200)
+                .json(new ApiResponse(200, { posts: [] }, 'bookmarked fetched...'));
+    }
 };
 
 module.exports = {
