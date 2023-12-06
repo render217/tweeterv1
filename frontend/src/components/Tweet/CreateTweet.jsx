@@ -7,7 +7,7 @@ import {
 import { useRef, useState } from "react";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import useTextAreaResize from "../../hooks/useTextAreaResize";
-import { checkImageValidity } from "../../utils";
+import { checkImageValidity, filterForTagFromContent } from "../../utils";
 import { useCreatePost } from "../../libs/query/queries";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
@@ -40,16 +40,19 @@ export default function CreateTweet() {
 
   const handleSubmitTweet = async (e) => {
     e.preventDefault();
+
+    const tags = filterForTagFromContent(tweet);
     console.log("tweet payload", {
       content: tweet,
       image: tweetImage,
       audience: audience,
+      tags: tags,
     });
     const formData = new FormData();
     formData.append("content", tweet);
     formData.append("audience", audience);
     formData.append("image", tweetImage);
-
+    formData.append("tags", tags);
     try {
       const { data } = await uploadPost(formData);
       toast.success(data?.message);

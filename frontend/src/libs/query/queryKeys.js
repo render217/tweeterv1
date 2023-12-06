@@ -3,6 +3,7 @@ export const QUERY_KEYS = {
   GET_CURRENT_USER: "getCurrentUser",
   // PROFILE_KEYS
   GET_ALL_USERS: "getAllUsers",
+  GET_USER_SUGGESTIONS: "getUserSuggestions",
   UPDATE_USER_PROFILE: "updateUserProfile",
   GET_PROFILE_BY_USERID: "getProfileByUserID",
   FOLLOW_UNFOLLOW_USER: "followUnFollowUser",

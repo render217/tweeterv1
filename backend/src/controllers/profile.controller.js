@@ -155,16 +155,19 @@ const followUnfollowUser = async (req, res) => {
     );
 
     if (isAlreadyFollowed === undefined && isAlreadyFollowedByLoggedInUser === undefined) {
-        user.following = [...user.following, loggedInUserId];
+        user.following = [...user.following, userTobeFollowed._id];
         userTobeFollowed.followers = [...userTobeFollowed.followers, loggedInUserId];
     } else {
-        user.following = user.following.filter((id) => id.toString() !== loggedInUserId.toString());
+        user.following = user.following.filter(
+            (id) => id.toString() !== userTobeFollowed._id.toString()
+        );
         userTobeFollowed.followers = user.followers.filter(
             (id) => id.toString() !== loggedInUserId.toString()
         );
     }
     await user.save();
     await userTobeFollowed.save();
+    user.password = undefined;
     res.status(200).json(
         new ApiResponse(
             200,
@@ -193,8 +196,37 @@ const getUsers = async (req, res) => {
     ]);
     res.status(200).json(new ApiResponse(200, { users: result }));
 };
+/**
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const getUserSuggestion = async (req, res) => {
+    const userId = req.user._id;
+    const users = await User.aggregate([
+        {
+            $match: {
+                _id: { $ne: userId },
+            },
+        },
+        {
+            $match: {
+                followers: { $not: { $in: [userId, '$followers'] } },
+            },
+        },
+        {
+            $set: {
+                isFollowed: {
+                    $cond: [{ $in: [userId, '$followers'] }, true, false],
+                },
+            },
+        },
+        { $unset: ['password', '__v'] },
 
-const getUserSuggestion = async (req, res) => {};
+        { $limit: 5 },
+    ]);
+    res.status(200).json(new ApiResponse(200, { users }));
+};
 
 module.exports = {
     getMySocialProfile,

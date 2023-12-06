@@ -26,3 +26,14 @@ export function formatDateFromNow(time) {
   const formattedDate = dayjs(time).fromNow();
   return formattedDate;
 }
+
+export function filterForTagFromContent(content) {
+  const regex = /#(\w+)/g;
+  const matches = content.match(regex);
+
+  if (matches) {
+    return matches.map((tag) => tag.substring(1));
+  } else {
+    return [];
+  }
+}

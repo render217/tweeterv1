@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Nav from "../../components/Navs/Nav";
 import PageWrapper from "../../components/PageWrapper";
 import SearchInput from "../../components/SearchInput";
@@ -8,6 +8,7 @@ import TweetFeed from "../../components/Tweet/TweetFeed";
 
 import AllUsers from "../../components/Users/AllUsers";
 import TweetExploreFeed from "../../components/Tweet/TweetExploreFeed";
+import { useLocation } from "react-router-dom";
 
 export default function Explore() {
   const options = [
@@ -16,7 +17,10 @@ export default function Explore() {
     { id: 3, link: "People" },
     { id: 4, link: "Media" },
   ];
-  const [selected, setSelected] = useState(1);
+  const location = useLocation();
+  //
+  const [selected, setSelected] = useState(location.state?.selected || 1);
+
   const onSelect = (selectedId) => {
     setSelected(selectedId);
   };
@@ -25,6 +29,7 @@ export default function Explore() {
   const handleSearch = async (e) => {
     e.preventDefault();
   };
+
   return (
     <PageWrapper>
       <div className="flex gap-8 max-lg:flex-col max-lg:gap-6">

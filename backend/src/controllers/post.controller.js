@@ -43,7 +43,7 @@ const createPost = async (req, res) => {
             content: content,
             audience: audience,
             author: userId,
-            tags: tags,
+            tags: tags.length > 0 ? tags : [],
         });
         const image = req.file;
         if (image) {

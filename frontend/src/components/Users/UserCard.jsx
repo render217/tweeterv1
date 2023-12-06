@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { Link } from "react-router-dom";
 import { Follow } from "../Actions";
 
 export default function UserCard({
@@ -26,8 +27,10 @@ export default function UserCard({
           />
         </div>
         <div className="">
-          <p className="mb-1 text-xs font-semibold">
-            {username || "Beamlak Samson"}
+          <p className="mb-1 text-sm font-semibold hover:underline">
+            <Link to={`/profile/${userId}`}>
+              {username || "Beamlak Samson"}
+            </Link>
           </p>
           <p className="text-xs text-clrGunSmoke">{`${followers.length} followers`}</p>
         </div>

@@ -1,8 +1,9 @@
-import { useGetAllUser } from "../../libs/query/queries";
+import { Link } from "react-router-dom";
+import { useGetUserSuggestions } from "../../libs/query/queries";
 import UserCard from "./UserCard";
 
 export default function UserSuggestions() {
-  const { data: axiosResponse, isPending, isError } = useGetAllUser();
+  const { data: axiosResponse, isPending, isError } = useGetUserSuggestions();
   if (isPending && !isError) {
     return (
       <div className=" rounded-md bg-white">
@@ -40,6 +41,12 @@ export default function UserSuggestions() {
             <UserCard key={user._id} user={user} />
           ))}
         </div>
+
+        <Link to={"/explore"} state={{ selected: 3 }}>
+          <p className=" mt-2 cursor-pointer text-center text-xs underline hover:scale-105">
+            see more
+          </p>
+        </Link>
       </div>
     </div>
   );

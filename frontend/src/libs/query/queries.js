@@ -31,7 +31,8 @@ import {
   addComment, // done
   likeDislikeComment,
   explore,
-  bookmarkExplore, // done
+  bookmarkExplore,
+  getUserSuggestion, // done
 } from "../api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -66,7 +67,12 @@ export const useGetAllUser = () => {
     queryFn: () => getUsers(),
   });
 };
-
+export const useGetUserSuggestions = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USER_SUGGESTIONS],
+    queryFn: () => getUserSuggestion(),
+  });
+};
 export const useGetCurrentProfile = () => {
   return useQuery({
     queryKey: [],
@@ -93,10 +99,9 @@ export const useGetProfileByUserId = (userId) => {
 };
 export const useFollowUnFollowUser = () => {
   const queryClient = useQueryClient();
-  // let clientUserId;
+
   return useMutation({
     mutationFn: (userId) => {
-      // clientUserId = userId;
       return followUnfollowUser(userId);
     },
     onSuccess: (data) => {
@@ -105,6 +110,9 @@ export const useFollowUnFollowUser = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_ALL_USERS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_USER_SUGGESTIONS],
       });
     },
   });
