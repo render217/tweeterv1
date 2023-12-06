@@ -9,6 +9,8 @@ const authRoutes = require('./routes/auth.routes');
 const profileRoutes = require('./routes/profile.routes');
 const postRoutes = require('./routes/post.routes');
 const commentRoutes = require('./routes/comment.routes');
+const exploreRoutes = require('./routes/explore.routes');
+const bookmarkRoutes = require('./routes/bookmark.routes');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 //
@@ -25,6 +27,9 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/profile', profileRoutes);
 app.use('/api/v1/post', postRoutes);
 app.use('/api/v1/comment', commentRoutes);
+//
+app.use('/api/v1/explore', exploreRoutes);
+app.use('/api/v1/bookmark', bookmarkRoutes);
 //
 app.use('*', notFound);
 app.use(errorHandler);
