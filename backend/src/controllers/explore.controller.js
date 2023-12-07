@@ -20,6 +20,11 @@ const getExploreFn = async (req, res) => {
         case 'top':
             const topResult = await Post.aggregate([
                 {
+                    $match: {
+                        content: { $regex: search, $options: 'i' },
+                    },
+                },
+                {
                     $lookup: {
                         from: 'users',
                         localField: 'author',

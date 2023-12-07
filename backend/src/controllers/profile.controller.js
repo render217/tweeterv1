@@ -188,9 +188,11 @@ const followUnfollowUser = async (req, res) => {
 
 const getUsers = async (req, res) => {
     console.log(req.query);
+    const search = req.query.q;
     const userId = req.user._id;
     const result = await User.aggregate([
         { $match: { _id: { $ne: userId } } },
+        { $match: { username: { $regex: search, $options: 'i' } } },
         {
             $set: {
                 isFollowed: {

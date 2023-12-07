@@ -49,12 +49,13 @@ export default function Explore() {
         <div className="w-full lg:w-80">
           <Nav onSelect={onSelect} selected={selected} options={options} />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 ">
           <SearchInput
             value={search}
             onChange={handleSearchOnChange}
             onSubmit={handleSearch}
           />
+          {/*  */}
           <div className={`my-1 ${loading ? "visible" : "invisible"}`}>
             <LoadingProgress />
           </div>
