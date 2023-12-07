@@ -124,7 +124,7 @@ export const likeDislikeComment = (postId, commentId) => {
 // EXPLORE ROUTES
 // ============================================================
 export const explore = ({ type, search }) => {
-  console.log("query", { type, search });
+  // console.log("query", { type, search });
   return API.get(`/explore?q=${type}&search=${search}`);
 };
 

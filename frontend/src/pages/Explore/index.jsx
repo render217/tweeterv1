@@ -19,6 +19,7 @@ export default function Explore() {
     { id: 4, link: "Media" },
   ];
   const location = useLocation();
+  console.log("explore location", location);
   //
   const [selected, setSelected] = useState(location.state?.selected || 1);
 
@@ -26,12 +27,25 @@ export default function Explore() {
     setSelected(selectedId);
   };
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState(location.state?.searchTerm || "");
+  const [search, setSearch] = useState(`${location.state?.searchTerm || ""}`);
 
-  const debonceSearch = useDebonce(search, 500);
+  const debonceSearch = useDebonce(
+    `${
+      location.state !== null && location.state?.searchTerm !== ""
+        ? `&tag=${location.state?.searchTerm}`
+        : search
+    }`,
+    500
+  );
 
   const handleSearchOnChange = (e) => {
-    setSearch(e.target.value);
+    if (location.state !== null) {
+      location.state = null;
+      setSearch("");
+      setSearch(e.target.value);
+    } else {
+      setSearch(e.target.value);
+    }
   };
 
   const handleSearch = async (e) => {

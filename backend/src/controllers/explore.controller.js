@@ -15,6 +15,7 @@ const getExploreFn = async (req, res) => {
     const userId = req.user._id;
     const explore = req.query.q;
     const search = req.query.search;
+    const tag = req.query?.tag;
     switch (explore) {
         case 'Top':
         case 'top':
@@ -78,6 +79,17 @@ const getExploreFn = async (req, res) => {
                 .json(new ApiResponse(200, { posts: topResult }, 'top liked posts fetched'));
         case 'Latest':
         case 'latest':
+            let tagPipeline;
+
+            if (tag) {
+                tagPipeline = {
+                    $match: {
+                        tags: { $in: [tag, '$tags'] },
+                    },
+                };
+            } else {
+                tagPipeline = { $unset: ['justtomakeitunempty'] };
+            }
             const latestResult = await Post.aggregate([
                 {
                     $match: {
@@ -87,6 +99,7 @@ const getExploreFn = async (req, res) => {
                         ],
                     },
                 },
+                tagPipeline,
                 {
                     $lookup: {
                         from: 'users',
