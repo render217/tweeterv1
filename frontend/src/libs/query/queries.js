@@ -285,7 +285,10 @@ export const useLikeDislikeComment = () => {
 export const useExplore = ({ type, search }) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_EXPLORE, type],
-    queryFn: () => explore({ type, search }),
+    queryFn: () => {
+      const filteredSearch = search?.replace(/#(?=[A-Za-z])/g, "");
+      return explore({ type, search: filteredSearch });
+    },
     enabled: !!type,
   });
 };

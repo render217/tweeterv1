@@ -4,6 +4,7 @@ import Modal from "../Modal";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
 /* eslint-disable react/prop-types */
 export default function TweetTrend() {
   const { data: axiosResponse, isError, isPending } = useGetAllTags();
@@ -70,9 +71,15 @@ export default function TweetTrend() {
 }
 
 function TrendCard({ title, no }) {
+  const navigate = useNavigate();
+  const onTrendItemClicked = () => {
+    navigate("/explore", { state: { selected: 2, searchTerm: `#${title}` } });
+  };
   return (
     <div className="mb-3">
-      <p className=" mb-1 cursor-pointer text-sm  font-semibold transition-all duration-300 hover:underline">
+      <p
+        onClick={onTrendItemClicked}
+        className=" mb-1 cursor-pointer text-sm  font-semibold transition-all duration-300 hover:underline">
         #{title}
       </p>
       <p className="text-xs text-clrGunSmoke ">

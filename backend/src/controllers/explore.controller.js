@@ -21,7 +21,10 @@ const getExploreFn = async (req, res) => {
             const topResult = await Post.aggregate([
                 {
                     $match: {
-                        content: { $regex: search, $options: 'i' },
+                        $or: [
+                            { content: { $regex: search, $options: 'i' } },
+                            { tags: { $in: [search, '$tags'] } },
+                        ],
                     },
                 },
                 {
@@ -77,6 +80,14 @@ const getExploreFn = async (req, res) => {
         case 'latest':
             const latestResult = await Post.aggregate([
                 {
+                    $match: {
+                        $or: [
+                            { content: { $regex: search, $options: 'i' } },
+                            { tags: { $in: [search, '$tags'] } },
+                        ],
+                    },
+                },
+                {
                     $lookup: {
                         from: 'users',
                         localField: 'author',
@@ -124,6 +135,7 @@ const getExploreFn = async (req, res) => {
                 {
                     $match: { _id: { $ne: userId } },
                 },
+                { $match: { username: { $regex: search, options: 'i' } } },
                 {
                     $set: {
                         isFollowed: {
@@ -150,6 +162,14 @@ const getExploreFn = async (req, res) => {
                 {
                     $match: {
                         imageUrl: { $ne: null },
+                    },
+                },
+                {
+                    $match: {
+                        $or: [
+                            { content: { $regex: search, $options: 'i' } },
+                            { tags: { $in: [search, '$tags'] } },
+                        ],
                     },
                 },
                 {

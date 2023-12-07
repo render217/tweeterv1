@@ -9,6 +9,7 @@ export default function TweetExploreFeed({ type, search }) {
     data: axiosResponse,
     isPending,
     isError,
+    isRefetching,
     refetch,
   } = useExplore({ type, search });
 
@@ -37,10 +38,17 @@ export default function TweetExploreFeed({ type, search }) {
     );
   }
   return (
-    <div className="my-2 min-h-[500px]">
-      {axiosResponse.data.payload.posts.length === 0 && <h1>NO Tweet Yet.</h1>}
-      <TweetList tweets={axiosResponse.data.payload.posts} />
-    </div>
+    <>
+      <div className="mt-2 h-1">
+        {isRefetching && search !== "" && <LoadingProgress />}
+      </div>
+      <div className="my-2 min-h-[500px]">
+        {axiosResponse.data.payload.posts.length === 0 && (
+          <p className="text-center">No Tweets</p>
+        )}
+        <TweetList tweets={axiosResponse.data.payload.posts} />
+      </div>
+    </>
   );
 }
 

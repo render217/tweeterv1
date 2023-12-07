@@ -26,7 +26,7 @@ export default function Explore() {
     setSelected(selectedId);
   };
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(location.state?.searchTerm || "");
 
   const debonceSearch = useDebonce(search, 500);
 
@@ -40,7 +40,7 @@ export default function Explore() {
     if (!search) {
       return;
     }
-    setSearch((search) => search);
+    // setSearch((search) => search);
   };
 
   return (
@@ -56,9 +56,9 @@ export default function Explore() {
             onSubmit={handleSearch}
           />
           {/*  */}
-          <div className={`my-1 ${loading ? "visible" : "invisible"}`}>
+          {/* <div className={`my-1 ${loading ? "visible" : "invisible"}`}>
             <LoadingProgress />
-          </div>
+          </div> */}
 
           {selected === 1 && (
             <TweetExploreFeed type={options[0].link} search={debonceSearch} />

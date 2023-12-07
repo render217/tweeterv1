@@ -39,15 +39,15 @@ export default function AllUsers({ search }) {
   }
   return (
     <>
-      {isRefetching && (
-        <div className="mb-2">
-          <LoadingProgress />
-        </div>
-      )}
+      <div className="mt-2 h-1">
+        {isRefetching && search !== "" && <LoadingProgress />}
+      </div>
       {axiosResponse.data.payload.users?.length === 0 && (
         <p className="text-center">No User Found</p>
       )}
-      <UsersList users={axiosResponse.data.payload.users} />
+      <div className="my-2">
+        <UsersList users={axiosResponse.data.payload.users} />
+      </div>
     </>
   );
 }
