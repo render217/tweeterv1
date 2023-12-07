@@ -5,6 +5,7 @@ import TweetCard from "./TweetCard";
 
 export default function TweetBookmarkFeed({ type, userId }) {
   console.log({ type, userId });
+
   const {
     data: axiosResponse,
     isPending,
@@ -33,7 +34,9 @@ export default function TweetBookmarkFeed({ type, userId }) {
   console.log("axiosReponse", axiosResponse);
   return (
     <div className="my-2 min-h-[500px]">
-      {axiosResponse.data.payload.posts.length === 0 && <h1>NO Tweet Yet.</h1>}
+      {axiosResponse.data.payload.posts.length === 0 && (
+        <h1 className="text-center text-xl">No Content</h1>
+      )}
       <TweetList tweets={axiosResponse.data.payload.posts} />
     </div>
   );

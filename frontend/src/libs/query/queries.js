@@ -61,10 +61,10 @@ export const useGetCurrentUser = () => {
 // ============================================================
 // PROFILE QUERIES
 // ============================================================
-export const useGetAllUser = () => {
+export const useGetAllUser = ({ search }) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_ALL_USERS],
-    queryFn: () => getUsers(),
+    queryFn: () => getUsers(search),
   });
 };
 export const useGetUserSuggestions = () => {

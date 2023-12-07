@@ -25,6 +25,7 @@ export default function Bookmark() {
   if (location.pathname === "/bookmark") {
     userId = user._id;
   }
+
   return (
     <PageWrapper>
       <div className="flex gap-8 max-lg:flex-col max-lg:gap-6">

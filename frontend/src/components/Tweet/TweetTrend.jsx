@@ -1,9 +1,17 @@
-import { Link } from "react-router-dom";
 import { useGetAllTags } from "../../libs/query/queries";
-
+import { useState } from "react";
+import Modal from "../Modal";
+import useOutsideClick from "../../hooks/useOutsideClick";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 /* eslint-disable react/prop-types */
 export default function TweetTrend() {
   const { data: axiosResponse, isError, isPending } = useGetAllTags();
+  const [showMore, setShowMore] = useState(false);
+  const closeShowMore = () => {
+    setShowMore(false);
+  };
+  const outsideModalRef = useOutsideClick(closeShowMore);
   if (isPending && !isError) {
     return <p>loading..</p>;
   }
@@ -12,26 +20,52 @@ export default function TweetTrend() {
   }
 
   return (
-    <div className="rounded-md bg-white">
-      <div className="p-4">
-        <p className="text-lg font-medium">Trends for you</p>
-        <hr className="mb-3 mt-2 border" />
-        {axiosResponse.data.payload.tags?.length > 0 ? (
-          <>
-            {axiosResponse.data.payload.tags.map((tag) => (
-              <TrendCard key={tag.tag} title={tag.tag} no={tag.count} />
-            ))}
-            <Link to={"/explore"} state={{ selected: 3 }}>
-              <p className=" mt-2 cursor-pointer text-center text-xs underline hover:scale-105">
+    <>
+      <div className="rounded-md bg-white">
+        <div className="p-4">
+          <p className="text-lg font-medium">Trends for you</p>
+          <hr className="mb-3 mt-2 border" />
+          {axiosResponse.data.payload.tags?.length > 0 ? (
+            <>
+              {axiosResponse.data.payload.tags.slice(0, 5).map((tag) => (
+                <TrendCard key={tag.tag} title={tag.tag} no={tag.count} />
+              ))}
+              <p
+                onClick={() => setShowMore(true)}
+                className=" mt-2 cursor-pointer text-center text-xs underline hover:scale-105">
                 see more
               </p>
-            </Link>
-          </>
-        ) : (
-          <p>Empty</p>
-        )}
+            </>
+          ) : (
+            <p>Empty</p>
+          )}
+        </div>
       </div>
-    </div>
+      {showMore && (
+        <Modal>
+          <div className="h-full max-sm:px-[3%]">
+            <div
+              ref={outsideModalRef}
+              className="mx-auto mt-36  max-h-[70%] min-h-[400px]  overflow-y-auto rounded-md bg-white p-4 max-sm:w-[90%] sm:w-[80%] md:max-w-2xl">
+              <div className="flex items-center justify-between">
+                <h1 className="text-sm md:text-lg">More trends</h1>
+                <FontAwesomeIcon
+                  onClick={() => closeShowMore()}
+                  className="cursor-pointer text-xl"
+                  icon={faClose}
+                />
+              </div>
+              <hr className="my-2 border" />
+              <div>
+                {axiosResponse.data.payload.tags.map((tag) => (
+                  <TrendCard key={tag.tag} title={tag.tag} no={tag.count} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+    </>
   );
 }
 

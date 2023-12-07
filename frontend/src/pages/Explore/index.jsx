@@ -9,6 +9,7 @@ import TweetFeed from "../../components/Tweet/TweetFeed";
 import AllUsers from "../../components/Users/AllUsers";
 import TweetExploreFeed from "../../components/Tweet/TweetExploreFeed";
 import { useLocation } from "react-router-dom";
+import useDebonce from "../../hooks/useDebonce";
 
 export default function Explore() {
   const options = [
@@ -26,8 +27,20 @@ export default function Explore() {
   };
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+
+  const debonceSearch = useDebonce(search, 500);
+
+  const handleSearchOnChange = (e) => {
+    setSearch(e.target.value);
+  };
+
   const handleSearch = async (e) => {
     e.preventDefault();
+    // setLoading(true);
+    if (!search) {
+      return;
+    }
+    setSearch((search) => search);
   };
 
   return (
@@ -39,7 +52,7 @@ export default function Explore() {
         <div className="flex-1">
           <SearchInput
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={handleSearchOnChange}
             onSubmit={handleSearch}
           />
           <div className={`my-1 ${loading ? "visible" : "invisible"}`}>
@@ -47,16 +60,16 @@ export default function Explore() {
           </div>
 
           {selected === 1 && (
-            <TweetExploreFeed type={options[0].link} search={search} />
+            <TweetExploreFeed type={options[0].link} search={debonceSearch} />
           )}
           {selected === 2 && (
-            <TweetExploreFeed type={options[1].link} search={search} />
+            <TweetExploreFeed type={options[1].link} search={debonceSearch} />
           )}
           {selected === 3 && (
-            <AllUsers type={options[2].link} search={search} />
+            <AllUsers type={options[2].link} search={debonceSearch} />
           )}
           {selected === 4 && (
-            <TweetExploreFeed type={options[3].link} search={search} />
+            <TweetExploreFeed type={options[3].link} search={debonceSearch} />
           )}
         </div>
       </div>

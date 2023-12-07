@@ -34,8 +34,8 @@ export const signUpUser = (formData) => {
 };
 
 // PROFILE ROUTES
-export const getUsers = () => {
-  return API.get("/profile/users");
+export const getUsers = (search) => {
+  return API.get(`/profile/users?q=${search}`);
 };
 export const getUserFollowers = () => {
   return API.get(`/profile/`);

@@ -31,12 +31,13 @@ import { LoadingProgress } from "../../components/Loading";
 import PageWrapper from "../../components/PageWrapper";
 import ErrorMessage from "../../components/Error";
 import { toast } from "react-toastify";
+import TweetBookmarkFeed from "../../components/Tweet/TweetBookmarkFeed";
 export default function Profile() {
   //============================================================
   //============================================================
   const options = [
     { id: 1, link: "Tweets" },
-    { id: 2, link: "Tweet & replies" },
+    { id: 2, link: "TweetAndReplies" },
     { id: 3, link: "Media" },
     { id: 4, link: "Likes" },
   ];
@@ -242,7 +243,32 @@ export default function Profile() {
                   />
                 </div>
                 <div className="flex-1">
-                  <TweetFeed />
+                  <div className="flex-1">
+                    {selected === 1 && (
+                      <TweetBookmarkFeed
+                        userId={userId}
+                        type={options[0].link}
+                      />
+                    )}
+                    {selected === 2 && (
+                      <TweetBookmarkFeed
+                        userId={userId}
+                        type={options[1].link}
+                      />
+                    )}
+                    {selected === 3 && (
+                      <TweetBookmarkFeed
+                        userId={userId}
+                        type={options[2].link}
+                      />
+                    )}
+                    {selected === 4 && (
+                      <TweetBookmarkFeed
+                        userId={userId}
+                        type={options[3].link}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             </Wrapper>

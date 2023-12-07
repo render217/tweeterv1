@@ -216,7 +216,6 @@ const getAllTags = async (req, res) => {
         { $set: { tag: '$_id' } },
         { $unset: ['_id'] },
         { $sort: { count: -1 } },
-        { $limit: 5 },
     ]);
     res.status(200).json(new ApiResponse(200, { tags: result }, 'successfully fetched all tags'));
 };

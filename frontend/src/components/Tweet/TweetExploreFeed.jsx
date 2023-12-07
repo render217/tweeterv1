@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { useEffect } from "react";
 import { useExplore } from "../../libs/query/queries";
 import { LoadingProgress } from "../Loading";
 import TweetCard from "./TweetCard";
@@ -8,7 +9,13 @@ export default function TweetExploreFeed({ type, search }) {
     data: axiosResponse,
     isPending,
     isError,
+    refetch,
   } = useExplore({ type, search });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, search]);
+
   if (isPending && !isError) {
     return (
       <>

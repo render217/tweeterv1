@@ -1,15 +1,21 @@
 /* eslint-disable react/prop-types */
+import { useEffect } from "react";
 import { useGetAllUser } from "../../libs/query/queries";
 import UserCard from "./UserCard";
 
-export default function AllUsers() {
+export default function AllUsers({ search }) {
   const {
     data: axiosResponse,
     isPending,
     isError,
     refetch,
     isRefetching,
-  } = useGetAllUser();
+  } = useGetAllUser({ search });
+
+  useEffect(() => {
+    refetch();
+  }, [search, refetch]);
+
   if (isPending && !isError) {
     return (
       <div>

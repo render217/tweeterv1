@@ -143,36 +143,43 @@ const followUnfollowUser = async (req, res) => {
     const loggedInUserId = req.user._id;
     isValidMongooseId(userId);
 
-    const user = await User.findById(loggedInUserId);
-    const userTobeFollowed = await User.findById(userId);
+    const loggedInUser = await User.findById(loggedInUserId);
+    const targetUser = await User.findById(userId);
 
-    const isAlreadyFollowed = user.following.find(
-        (id) => id.toString() === loggedInUserId.toString()
+    // check if the are friends
+    // which means check if the target user to which it will be followed or unfollowed is already followed
+    const isTargetUserAlreadyFollowed = loggedInUser.following.find(
+        (id) => id.toString() === targetUser._id.toString()
+    );
+    const isTargetUserBeingFollowed = targetUser.followers.find(
+        (id) => id.toString() === loggedInUser._id.toString()
     );
 
-    const isAlreadyFollowedByLoggedInUser = userTobeFollowed.followers.find(
-        (id) => id.toString() === loggedInUserId.toString()
-    );
+    console.log('target user is already followed : ', isTargetUserAlreadyFollowed);
+    console.log('target user is followed by the loggedIn User:', isTargetUserBeingFollowed);
 
-    if (isAlreadyFollowed === undefined && isAlreadyFollowedByLoggedInUser === undefined) {
-        user.following = [...user.following, userTobeFollowed._id];
-        userTobeFollowed.followers = [...userTobeFollowed.followers, loggedInUserId];
+    if (isTargetUserAlreadyFollowed === undefined && isTargetUserBeingFollowed === undefined) {
+        // set the logic to follow the target user;
+        loggedInUser.following = [...loggedInUser.following, targetUser._id];
+        targetUser.followers = [...targetUser.followers, loggedInUser._id];
     } else {
-        user.following = user.following.filter(
-            (id) => id.toString() !== userTobeFollowed._id.toString()
+        // if is is undefined then the target user is already followed so unfollow the target user
+        loggedInUser.following = loggedInUser.following.filter(
+            (id) => id.toString() !== targetUser._id.toString()
         );
-        userTobeFollowed.followers = user.followers.filter(
-            (id) => id.toString() !== loggedInUserId.toString()
+        targetUser.followers = targetUser.followers.filter(
+            (id) => id.toString() !== loggedInUser._id.toString()
         );
     }
-    await user.save();
-    await userTobeFollowed.save();
-    user.password = undefined;
+    await loggedInUser.save();
+    await targetUser.save();
+
+    loggedInUser.password = undefined;
     res.status(200).json(
         new ApiResponse(
             200,
-            { user },
-            `successfully ${isAlreadyFollowed === undefined ? 'followed' : 'unfollowed'} `
+            { user: loggedInUser },
+            `successfully ${isTargetUserAlreadyFollowed === undefined ? 'followed' : 'unfollowed'} `
         )
     );
 };
@@ -180,6 +187,7 @@ const followUnfollowUser = async (req, res) => {
 // const getFollowingListByUsername = async (req, res) => {};
 
 const getUsers = async (req, res) => {
+    console.log(req.query);
     const userId = req.user._id;
     const result = await User.aggregate([
         { $match: { _id: { $ne: userId } } },
