@@ -10,9 +10,13 @@ import {
 import Comments from "../Comment";
 import AddComment from "../Comment/AddComment";
 import { formatDateFromNow } from "../../utils";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRotate } from "@fortawesome/free-solid-svg-icons";
 
 export default function TweetCard({ tweet }) {
+  const { user } = useAuth();
   const {
     _id: postId,
     content,
@@ -21,13 +25,14 @@ export default function TweetCard({ tweet }) {
     tags,
     audience,
     author: { _id: authorId, username, profileImage },
-    isLiked,
-    isRetweeted,
-    isBookmarked,
     comments,
     likes,
     bookmark,
     retweet,
+    lastRetweeter,
+    isLiked,
+    isRetweeted,
+    isBookmarked,
     createdAt,
     updatedAt,
   } = tweet;
@@ -38,7 +43,7 @@ export default function TweetCard({ tweet }) {
 
   return (
     <>
-      <div className="py-2 text-xs text-clrGunSmoke">meta info</div>
+      <RetweetInfo user={user} lastRetweeter={lastRetweeter} />
       <div className="bg-white p-4">
         <div className="flex gap-2">
           {/* Author Info start*/}
@@ -145,5 +150,34 @@ function TweetInfo({ comments, retweets, likes, saved }) {
         ))}
       </div>
     </>
+  );
+}
+
+function RetweetInfo({ user, lastRetweeter }) {
+  let content;
+  if (lastRetweeter === null || lastRetweeter === undefined) {
+    content = null;
+  } else if (lastRetweeter?._id.toString() === user._id.toString()) {
+    content = (
+      <Link to={`/profile/${user._id}`} className="underline">
+        You
+      </Link>
+    );
+  } else {
+    content = (
+      <Link to={`/profile/${lastRetweeter?._id}`} className="underline">
+        {lastRetweeter?.username}
+      </Link>
+    );
+  }
+  return (
+    <div className="py-2 text-xs text-clrGunSmoke">
+      {content && (
+        <div className="flex items-center gap-2">
+          <FontAwesomeIcon icon={faRotate} />
+          <p>{content} Retweeted</p>
+        </div>
+      )}
+    </div>
   );
 }

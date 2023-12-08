@@ -4,12 +4,14 @@ const Comment = require('../models/comment.model');
 const ApiResponse = require('../utils/ApiResponse');
 const ApiError = require('../utils/ApiError');
 const { default: mongoose } = require('mongoose');
+const { postCommonAggregation } = require('./common');
 
 /**
  *
  * @param {import("express").Request} req
  * @param {import("express").Response} res
  */
+
 const getExploreFn = async (req, res) => {
     console.log(req.query);
     const userId = req.user._id;
@@ -17,6 +19,11 @@ const getExploreFn = async (req, res) => {
     const search = req.query.search;
     const tag = req.query?.tag;
     switch (explore) {
+        /**
+         *
+         *
+         *
+         */
         case 'Top':
         case 'top':
             const topResult = await Post.aggregate([
@@ -28,68 +35,28 @@ const getExploreFn = async (req, res) => {
                         ],
                     },
                 },
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'author',
-                        foreignField: '_id',
-                        as: 'author',
-                        pipeline: [
-                            {
-                                $project: {
-                                    username: 1,
-                                    profileImage: 1,
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    $set: {
-                        author: { $first: '$author' },
-                        isLiked: {
-                            $cond: {
-                                if: { $in: [userId, '$likes'] },
-                                then: true,
-                                else: false,
-                            },
-                        },
-                        isRetweeted: {
-                            $cond: [{ $in: [userId, '$retweet'] }, true, false],
-                        },
-                        isBookmarked: {
-                            $cond: [{ $in: [userId, '$bookmark'] }, true, false],
-                        },
-                    },
-                },
-                {
-                    $set: {
-                        noOfLikes: { $size: '$likes' },
-                    },
-                },
-                {
-                    $sort: { noOfLikes: -1 },
-                },
-                // {
-                //     $unset: ['noOfLikes'],
-                // },
+                ...postCommonAggregation(req),
+                { $set: { noOfLikes: { $size: '$likes' } } },
+                { $sort: { noOfLikes: -1 } },
+                { $unset: ['noOfLikes'] },
             ]);
             return res
                 .status(200)
                 .json(new ApiResponse(200, { posts: topResult }, 'top liked posts fetched'));
+        /**
+         *
+         *
+         *
+         */
         case 'Latest':
         case 'latest':
-            let tagPipeline;
-
-            if (tag) {
-                tagPipeline = {
-                    $match: {
-                        tags: { $in: [tag, '$tags'] },
-                    },
-                };
-            } else {
-                tagPipeline = { $unset: ['justtomakeitunempty'] };
-            }
+            /**
+             *  @returns {mongoose.PipelineStage[]}
+             * */
+            const tagPipeline = () => {
+                if (tag) return [{ $match: { tags: { $in: [tag, '$tags'] } } }];
+                return [{ $unset: ['justtomakeitunempty'] }];
+            };
             const latestResult = await Post.aggregate([
                 {
                     $match: {
@@ -99,55 +66,20 @@ const getExploreFn = async (req, res) => {
                         ],
                     },
                 },
-                tagPipeline,
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'author',
-                        foreignField: '_id',
-                        as: 'author',
-                        pipeline: [
-                            {
-                                $project: {
-                                    username: 1,
-                                    profileImage: 1,
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    $set: {
-                        author: { $first: '$author' },
-                        isLiked: {
-                            $cond: {
-                                if: { $in: [userId, '$likes'] },
-                                then: true,
-                                else: false,
-                            },
-                        },
-                        isRetweeted: {
-                            $cond: [{ $in: [userId, '$retweet'] }, true, false],
-                        },
-                        isBookmarked: {
-                            $cond: [{ $in: [userId, '$bookmark'] }, true, false],
-                        },
-                    },
-                },
-
-                {
-                    $sort: { createdAt: -1 },
-                },
+                ...tagPipeline(),
+                ...postCommonAggregation(req),
+                { $sort: { createdAt: -1 } },
             ]);
-            return res
-                .status(200)
-                .json(new ApiResponse(200, { posts: latestResult }, 'latest posts fetched'));
+            return res.status(200).json(new ApiResponse(200, { posts: latestResult }));
+        /**
+         *
+         *
+         *
+         */
         case 'People':
         case 'people':
             const allPeople = await User.aggregate([
-                {
-                    $match: { _id: { $ne: userId } },
-                },
+                { $match: { _id: { $ne: userId } } },
                 { $match: { username: { $regex: search, options: 'i' } } },
                 {
                     $set: {
@@ -166,9 +98,12 @@ const getExploreFn = async (req, res) => {
                     ],
                 },
             ]);
-            return res
-                .status(200)
-                .json(new ApiResponse(200, { people: allPeople }, 'avaliable users fetched'));
+            return res.status(200).json(new ApiResponse(200, { people: allPeople }));
+        /**
+         *
+         *
+         *
+         */
         case 'Media':
         case 'media':
             const mediaResult = await Post.aggregate([
@@ -185,94 +120,17 @@ const getExploreFn = async (req, res) => {
                         ],
                     },
                 },
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'author',
-                        foreignField: '_id',
-                        as: 'author',
-                        pipeline: [
-                            {
-                                $project: {
-                                    username: 1,
-                                    profileImage: 1,
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    $set: {
-                        author: { $first: '$author' },
-                        isLiked: {
-                            $cond: {
-                                if: { $in: [userId, '$likes'] },
-                                then: true,
-                                else: false,
-                            },
-                        },
-                        isRetweeted: {
-                            $cond: [{ $in: [userId, '$retweet'] }, true, false],
-                        },
-                        isBookmarked: {
-                            $cond: [{ $in: [userId, '$bookmark'] }, true, false],
-                        },
-                    },
-                },
-                {
-                    $sort: { createdAt: -1 },
-                },
+                ...postCommonAggregation(req),
+                { $sort: { createdAt: -1 } },
             ]);
-            return res
-                .status(200)
-                .json(new ApiResponse(200, { posts: mediaResult }, 'media posts fetched'));
+            return res.status(200).json(new ApiResponse(200, { posts: mediaResult }));
 
         default:
             const defaultResult = await Post.aggregate([
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'author',
-                        foreignField: '_id',
-                        as: 'author',
-                        pipeline: [
-                            {
-                                $project: {
-                                    username: 1,
-                                    profileImage: 1,
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    $set: {
-                        author: { $first: '$author' },
-                        isLiked: {
-                            $cond: {
-                                if: { $in: [userId, '$likes'] },
-                                then: true,
-                                else: false,
-                            },
-                        },
-                        isRetweeted: {
-                            $cond: [{ $in: [userId, '$retweet'] }, true, false],
-                        },
-                        isBookmarked: {
-                            $cond: [{ $in: [userId, '$bookmark'] }, true, false],
-                        },
-                    },
-                },
-
-                {
-                    $sort: { createdAt: -1 },
-                },
+                ...postCommonAggregation(req),
+                { $sort: { createdAt: -1 } },
             ]);
-            return res
-                .status(200)
-                .json(
-                    new ApiResponse(200, { posts: defaultResult }, 'latest posts fetched (default)')
-                );
+            return res.status(200).json(new ApiResponse(200, { posts: defaultResult }));
     }
 };
 

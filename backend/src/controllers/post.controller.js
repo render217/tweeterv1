@@ -8,6 +8,7 @@ const fs = require('node:fs');
 const MulterUpload = require('../middleware/multer');
 const multer = require('multer');
 const { uploadToCloudinary } = require('../utils/cloudinaryUtils');
+const { postCommonAggregation } = require('./common');
 
 /**
  *
@@ -27,7 +28,7 @@ const createPost = async (req, res) => {
         if (err instanceof multer.MulterError) {
             switch (err.code) {
                 case 'LIMIT_UNEXPECTED_FILE':
-                    console.log("didn't recieved file named image ");
+                    console.log("didn't recieved file named image but it's ok");
                     break;
                 case 'LIMIT_FILE_SIZE':
                     return res.status(400).json(new ApiError(400, 'File too large'));
@@ -43,7 +44,7 @@ const createPost = async (req, res) => {
             content: content,
             audience: audience,
             author: userId,
-            tags: tags.length > 0 ? [...tags.split(',')] : [],
+            tags: tags?.length > 0 ? [...tags.split(',')] : [],
         });
         const image = req.file;
         if (image) {
@@ -58,7 +59,12 @@ const createPost = async (req, res) => {
             }
         }
         await newPost.save();
-        res.status(201).json(new ApiResponse(200, { post: newPost }, 'successfully tweeted'));
+
+        const result = await Post.aggregate([
+            { $match: { _id: newPost._id } },
+            ...postCommonAggregation(req),
+        ]);
+        res.status(201).json(new ApiResponse(200, { post: result[0] }, 'successfully tweeted'));
     });
 };
 
@@ -76,12 +82,10 @@ const likeDislikePost = async (req, res) => {
     const likeIndex = post.likes.findIndex((id) => id.toString() === userId.toString());
     console.log(likeIndex);
     if (likeIndex === -1) {
-        console.log('post was not liked');
         const updatedLikes = [...post.likes, userId];
         post.likes = updatedLikes;
         await post.save();
     } else {
-        console.log('post was already liked');
         const updatedLikes = post.likes.filter((id) => id.toString() !== userId.toString());
         post.likes = updatedLikes;
         await post.save();
@@ -151,54 +155,16 @@ const retweetDetweetPost = async (req, res) => {
         )
     );
 };
-
+/**
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
 const getPosts = async (req, res) => {
-    const userId = req.user._id;
     const result = await Post.aggregate([
-        {
-            $lookup: {
-                from: 'users',
-                localField: 'author',
-                foreignField: '_id',
-                as: 'author',
-                pipeline: [
-                    {
-                        $project: {
-                            username: 1,
-                            profileImage: 1,
-                        },
-                    },
-                ],
-            },
-        },
-        {
-            $set: {
-                author: { $first: '$author' },
-                isLiked: {
-                    $cond: {
-                        if: { $in: [userId, '$likes'] },
-                        then: true,
-                        else: false,
-                    },
-                },
-                isRetweeted: {
-                    $cond: [{ $in: [userId, '$retweet'] }, true, false],
-                },
-                isBookmarked: {
-                    $cond: [{ $in: [userId, '$bookmark'] }, true, false],
-                },
-            },
-        },
-        {
-            $sort: {
-                createdAt: -1,
-            },
-        },
+        ...postCommonAggregation(req),
+        { $sort: { createdAt: -1 } },
     ]);
-    // const posts = await Post.find({});
-    // res.status(200).json(
-    //     new ApiResponse(200, { posts }, "successfully fetched all tweets")
-    // );
     res.status(200).json(
         new ApiResponse(200, { posts: result }, 'successfully fetched all tweets')
     );
@@ -221,6 +187,7 @@ const getAllTags = async (req, res) => {
 };
 
 const getUsersPosts = async (req, res) => {};
+
 // const updatePost = async (req, res) => {};
 // const deletePost = async (req, res) => {};
 // const getBookmarkedPosts = async (req, res) => {};
@@ -250,3 +217,5 @@ const isValidMongooseId = (id) => {
         throw new ApiError(400, 'Invalid ID');
     }
 };
+
+const monooseId = (id) => new mongoose.Types.ObjectId(id);

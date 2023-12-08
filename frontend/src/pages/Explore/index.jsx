@@ -24,6 +24,7 @@ export default function Explore() {
   const [selected, setSelected] = useState(location.state?.selected || 1);
 
   const onSelect = (selectedId) => {
+    location.state = null;
     setSelected(selectedId);
   };
   const [loading, setLoading] = useState(false);

@@ -38,7 +38,7 @@ export default function TweetTrend() {
               </p>
             </>
           ) : (
-            <p>Empty</p>
+            <p className="text-center text-sm">No Trends Yet</p>
           )}
         </div>
       </div>
