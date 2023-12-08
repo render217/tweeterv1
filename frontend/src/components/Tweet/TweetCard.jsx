@@ -33,6 +33,7 @@ export default function TweetCard({ tweet }) {
     isLiked,
     isRetweeted,
     isBookmarked,
+    canComment,
     createdAt,
     updatedAt,
   } = tweet;
@@ -114,7 +115,11 @@ export default function TweetCard({ tweet }) {
         {/* comment text area */}
 
         <div className="">
-          <AddComment addCommentRef={addCommentRef} postId={postId} />
+          <AddComment
+            addCommentRef={addCommentRef}
+            postId={postId}
+            canComment={canComment}
+          />
         </div>
 
         {/* comments list */}
@@ -171,9 +176,9 @@ function RetweetInfo({ user, lastRetweeter }) {
     );
   }
   return (
-    <div className="py-2 text-xs text-clrGunSmoke">
+    <div className=" py-2 text-xs text-clrGunSmoke">
       {content && (
-        <div className="flex items-center gap-2">
+        <div className="mt-1.5 flex items-center gap-2">
           <FontAwesomeIcon icon={faRotate} />
           <p>{content} Retweeted</p>
         </div>

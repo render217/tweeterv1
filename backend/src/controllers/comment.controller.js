@@ -1,32 +1,24 @@
-const User = require("../models/user.model");
-const Post = require("../models/post.model");
-const Comment = require("../models/comment.model");
+const User = require('../models/user.model');
+const Post = require('../models/post.model');
+const Comment = require('../models/comment.model');
 
-const ApiResponse = require("../utils/ApiResponse");
-const ApiError = require("../utils/ApiError");
-const { default: mongoose, isValidObjectId } = require("mongoose");
+const ApiResponse = require('../utils/ApiResponse');
+const ApiError = require('../utils/ApiError');
+const { default: mongoose, isValidObjectId } = require('mongoose');
 
 /**
- *
  * @param {import("express").Request} req
- * @param {import("express").Response} res
+ * @returns {mongoose.PipelineStage[]}
  */
-const getPostComments = async (req, res) => {
+const commentCommonAggregation = (req) => {
     const userId = req.user._id;
-    const { postId } = req.params;
-
-    isValidMongooseId(postId);
-
-    const result = await Comment.aggregate([
-        {
-            $match: { post: { $eq: mongooseId(postId) } },
-        },
+    return [
         {
             $lookup: {
-                from: "users",
-                localField: "author",
-                foreignField: "_id",
-                as: "author",
+                from: 'users',
+                localField: 'author',
+                foreignField: '_id',
+                as: 'author',
                 pipeline: [
                     {
                         $project: {
@@ -39,12 +31,28 @@ const getPostComments = async (req, res) => {
         },
         {
             $set: {
-                author: { $first: "$author" },
+                author: { $first: '$author' },
                 isLiked: {
-                    $cond: [{ $in: [userId, "$likes"] }, true, false],
+                    $cond: [{ $in: [userId, '$likes'] }, true, false],
                 },
             },
         },
+    ];
+};
+/**
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const getPostComments = async (req, res) => {
+    const userId = req.user._id;
+    const { postId } = req.params;
+
+    isValidMongooseId(postId);
+
+    const result = await Comment.aggregate([
+        { $match: { post: { $eq: mongooseId(postId) } } },
+        ...commentCommonAggregation(req),
     ]);
 
     res.status(200).json(new ApiResponse(200, { comments: result }));
@@ -60,48 +68,24 @@ const addComment = async (req, res) => {
     isValidMongooseId(postId);
 
     const { content } = req.body;
-    console.log(req.body);
+    console.log('comment payload..', req.body);
+
     if (!content) {
-        throw new ApiError(400, "comment content is required");
+        throw new ApiError(400, 'comment content is required');
     }
     const newComment = await Comment.create({
         author: userId,
         content: content,
         post: postId,
     });
+
     const result = await Comment.aggregate([
-        {
-            $match: {
-                post: { $eq: mongooseId(postId) },
-                _id: { $eq: newComment._id },
-            },
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "author",
-                foreignField: "_id",
-                as: "author",
-                pipeline: [
-                    {
-                        $project: {
-                            username: 1,
-                            profileImage: 1,
-                        },
-                    },
-                ],
-            },
-        },
-        {
-            $set: {
-                author: { $first: "$author" },
-            },
-        },
+        { $match: { _id: { $eq: newComment._id } } },
+        ...commentCommonAggregation(req),
     ]);
+
     const payload = result[0];
-    res.status(200).json(
-        new ApiResponse(200, { comment: payload }, "successfully commented")
-    );
+    res.status(200).json(new ApiResponse(200, { comment: payload }, 'successfully commented'));
 };
 /**
  *
@@ -119,15 +103,11 @@ const likeDislikeComment = async (req, res) => {
         _id: commentId,
     });
     console.log(commentId);
-    const isLiked = comment.likes.find(
-        (id) => id.toString() === userId.toString()
-    );
+    const isLiked = comment.likes.find((id) => id.toString() === userId.toString());
     if (isLiked === undefined) {
         comment.likes = [...comment.likes, userId];
     } else {
-        comment.likes = comment.likes.filter(
-            (id) => id.toString() !== userId.toString()
-        );
+        comment.likes = comment.likes.filter((id) => id.toString() !== userId.toString());
     }
     await comment.save();
 
@@ -135,9 +115,7 @@ const likeDislikeComment = async (req, res) => {
         new ApiResponse(
             200,
             { comment },
-            `successfully ${
-                isLiked === undefined ? "Liked" : "UnLiked"
-            } comment`
+            `successfully ${isLiked === undefined ? 'Liked' : 'UnLiked'} comment`
         )
     );
 };
@@ -155,7 +133,7 @@ module.exports = {
 
 const isValidMongooseId = (id) => {
     if (!mongoose.isValidObjectId(id)) {
-        throw new ApiError(400, "Invalid ID");
+        throw new ApiError(400, 'Invalid ID');
     }
 };
 

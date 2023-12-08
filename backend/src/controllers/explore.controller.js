@@ -107,11 +107,7 @@ const getExploreFn = async (req, res) => {
         case 'Media':
         case 'media':
             const mediaResult = await Post.aggregate([
-                {
-                    $match: {
-                        imageUrl: { $ne: null },
-                    },
-                },
+                { $match: { imageUrl: { $ne: null } } },
                 {
                     $match: {
                         $or: [

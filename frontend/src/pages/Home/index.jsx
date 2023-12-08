@@ -9,7 +9,7 @@ export default function Home() {
     <>
       <PageWrapper>
         <div className="flex flex-col  gap-5 lg:flex-row lg:gap-8">
-          <div className="flex flex-1 flex-col gap-5  lg:gap-8">
+          <div className="flex flex-1 flex-col gap-3  lg:gap-6">
             <CreateTweet />
             <TweetFeed />
           </div>
