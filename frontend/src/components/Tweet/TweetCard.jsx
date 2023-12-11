@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   BookmarkAction,
   CommentAction,
@@ -42,6 +42,7 @@ export default function TweetCard({ tweet }) {
 
   const addCommentRef = useRef();
 
+  // const [totalComments, setTotalComments] = useState(0);
   return (
     <>
       <RetweetInfo user={user} lastRetweeter={lastRetweeter} />
@@ -95,6 +96,7 @@ export default function TweetCard({ tweet }) {
         <div className="flex justify-end py-1">
           <TweetInfo
             comments={comments}
+            // comments={totalComments}
             retweets={retweet}
             likes={likes}
             saved={bookmark}
@@ -126,7 +128,7 @@ export default function TweetCard({ tweet }) {
 
         <hr className="my-1 border" />
         <div>
-          <Comments postId={postId} comments={comments} />
+          <Comments postId={postId} />
         </div>
       </div>
     </>
@@ -134,7 +136,6 @@ export default function TweetCard({ tweet }) {
 }
 
 function TweetInfo({ comments, retweets, likes, saved }) {
-  // console.log(Info);
   let Info = [
     { property: "Comments", total: comments.length },
     { property: "Retweets", total: retweets.length },

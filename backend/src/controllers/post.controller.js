@@ -75,12 +75,15 @@ const createPost = async (req, res) => {
  */
 const likeDislikePost = async (req, res) => {
     const userId = req.user._id;
+
     const { postId } = req.params;
 
     isValidMongooseId(postId);
+
     const post = await Post.findById(postId);
+
     const likeIndex = post.likes.findIndex((id) => id.toString() === userId.toString());
-    console.log(likeIndex);
+
     if (likeIndex === -1) {
         const updatedLikes = [...post.likes, userId];
         post.likes = updatedLikes;
@@ -106,18 +109,23 @@ const likeDislikePost = async (req, res) => {
  */
 const bookmarkUnBookmarkPost = async (req, res) => {
     const userId = req.user._id;
+
     const { postId } = req.params;
+
     isValidMongooseId(postId);
 
     const post = await Post.findById(postId);
 
     const isBookmarked = post.bookmark.find((id) => id.toString() === userId.toString());
+
     if (isBookmarked === undefined) {
         post.bookmark = [...post.bookmark, userId];
     } else {
         post.bookmark = post.bookmark.filter((id) => id.toString() !== userId.toString());
     }
+
     await post.save();
+
     res.status(200).json(
         new ApiResponse(
             200,
@@ -127,23 +135,28 @@ const bookmarkUnBookmarkPost = async (req, res) => {
     );
 };
 /**
- *
  * @param {import("express").Request} req
  * @param {import("express").Response} res
  */
+
 const retweetDetweetPost = async (req, res) => {
     const userId = req.user._id;
+
     const { postId } = req.params;
+
     isValidMongooseId(postId);
 
     const post = await Post.findById(postId);
 
     const isRetweeted = post.retweet.find((id) => id.toString() === userId.toString());
+
     if (isRetweeted === undefined) {
         post.retweet = [...post.retweet, userId];
+
         await post.save();
     } else {
         post.retweet = post.retweet.filter((id) => id.toString() !== userId.toString());
+
         await post.save();
     }
 
@@ -159,11 +172,27 @@ const retweetDetweetPost = async (req, res) => {
  *
  * @param {import("express").Request} req
  * @param {import("express").Response} res
+ *
  */
 const getPosts = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const total = await Post.countDocuments();
+
+    const pages = Math.ceil(total / limit);
+
+    if (page > pages) {
+        return res
+            .status(200)
+            .json(new ApiResponse(200, { posts: [] }, 'successfully fetched all tweets'));
+    }
+
     const result = await Post.aggregate([
         ...postCommonAggregation(req),
         { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit },
     ]);
     res.status(200).json(
         new ApiResponse(200, { posts: result }, 'successfully fetched all tweets')
@@ -175,7 +204,12 @@ const getPosts = async (req, res) => {
  * @param {import("express").Request} req
  * @param {import("express").Response} res
  */
+
 const getAllTags = async (req, res) => {
+    // const page = parseInt(req.query.page) || 1;
+    // const limit = parseInt(req.query.limit) || 8;
+    // const skip = (page - 1) * limit;
+
     const result = await Post.aggregate([
         { $unwind: '$tags' },
         { $group: { _id: '$tags', count: { $sum: 1 }, posts: { $push: '$_id' } } },
@@ -183,6 +217,7 @@ const getAllTags = async (req, res) => {
         { $unset: ['_id'] },
         { $sort: { count: -1 } },
     ]);
+
     res.status(200).json(new ApiResponse(200, { tags: result }, 'successfully fetched all tags'));
 };
 

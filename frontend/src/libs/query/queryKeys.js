@@ -8,6 +8,9 @@ export const QUERY_KEYS = {
   GET_PROFILE_BY_USERID: "getProfileByUserID",
   FOLLOW_UNFOLLOW_USER: "followUnFollowUser",
 
+  GET_FOLLOWERS_LIST: "getFollowersList",
+  GET_FOLLOWING_LIST: "getFollowingList",
+
   // POST_KEYS
   GET_ALL_POSTS: "getAllPosts",
   CREATE_POST: "createPost",

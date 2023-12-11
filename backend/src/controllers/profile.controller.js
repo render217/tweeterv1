@@ -183,13 +183,12 @@ const followUnfollowUser = async (req, res) => {
         )
     );
 };
-// const getFollowersListByUsername = async (req, res) => {};
-// const getFollowingListByUsername = async (req, res) => {};
 
 const getUsers = async (req, res) => {
     console.log(req.query);
-    const search = req.query.q;
+    const search = req.query.q || '';
     const userId = req.user._id;
+
     const result = await User.aggregate([
         { $match: { _id: { $ne: userId } } },
         { $match: { username: { $regex: search, $options: 'i' } } },
@@ -238,6 +237,108 @@ const getUserSuggestion = async (req, res) => {
     res.status(200).json(new ApiResponse(200, { users }));
 };
 
+/**
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const getProfileFollowersList = async (req, res) => {
+    const userId = req.params.userId;
+    const authUserId = req.user._id;
+
+    isValidMongooseId(userId);
+
+    const result = await User.aggregate([
+        { $match: { _id: mongooseId(userId) } },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'followers',
+                foreignField: '_id',
+                as: 'followers',
+                pipeline: [
+                    {
+                        $project: {
+                            username: 1,
+                            bio: 1,
+                            coverImage: 1,
+                            profileImage: 1,
+                            followers: 1,
+                            following: 1,
+                        },
+                    },
+                    {
+                        $set: {
+                            isFollowed: {
+                                $cond: [{ $in: [authUserId, '$followers'] }, true, false],
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            $project: {
+                followers: 1,
+                _id: 0,
+            },
+        },
+    ]);
+
+    res.status(200).json(new ApiResponse(200, result[0], 'successfulyy fetched followers'));
+};
+
+/**
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const getProfileFollowingList = async (req, res) => {
+    const userId = req.params.userId;
+    const authUserId = req.user._id;
+
+    isValidMongooseId(userId);
+
+    const result = await User.aggregate([
+        { $match: { _id: mongooseId(userId) } },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'following',
+                foreignField: '_id',
+                as: 'following',
+                pipeline: [
+                    {
+                        $project: {
+                            username: 1,
+                            bio: 1,
+                            coverImage: 1,
+                            profileImage: 1,
+                            followers: 1,
+                            following: 1,
+                        },
+                    },
+                    {
+                        $set: {
+                            isFollowed: {
+                                $cond: [{ $in: [authUserId, '$following'] }, true, false],
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            $project: {
+                following: 1,
+                _id: 0,
+            },
+        },
+    ]);
+
+    res.status(200).json(new ApiResponse(200, result[0], 'successfully fetched following'));
+};
+
 module.exports = {
     getMySocialProfile,
     getProfileByUserId,
@@ -245,8 +346,8 @@ module.exports = {
     followUnfollowUser,
     getUsers,
     getUserSuggestion,
-    // getFollowersListByUsername,
-    // getFollowingListByUsername,
+    getProfileFollowersList,
+    getProfileFollowingList,
 };
 
 const isValidMongooseId = (id) => {

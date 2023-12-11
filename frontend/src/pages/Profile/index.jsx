@@ -52,7 +52,7 @@ export default function Profile() {
   const [scrollDown, setScrollDown] = useState(false);
   //============================================================
   //============================================================
-  const onChangeScrollDown = (val) => {
+  const onChangeScrollDown = () => {
     setScrollDown(!scrollDown);
   };
   useEffect(() => {
@@ -75,6 +75,10 @@ export default function Profile() {
 
   const { mutateAsync: updateProfile, isPending: isUpdating } =
     useUpdateProfile();
+
+  useEffect(() => {
+    handleModalClose();
+  }, [id]);
 
   if (isPending && !isError) {
     return (
@@ -284,8 +288,14 @@ export default function Profile() {
               className="mx-auto mt-36  max-h-[70%] min-h-[400px]  overflow-y-auto rounded-md bg-white p-4 max-sm:w-[90%] sm:w-[80%] md:max-w-2xl">
               <div className="flex items-center justify-between">
                 <h1 className="text-sm md:text-lg">
-                  {showFollowing && "You are following"}
-                  {showFollowers && "You are followed by"}
+                  {showFollowing &&
+                    (userId === user._id
+                      ? "You are following"
+                      : `${username} is following`)}
+                  {showFollowers &&
+                    (userId === user._id
+                      ? "You are followed by"
+                      : `${username} is followed by `)}
                 </h1>
                 <FontAwesomeIcon
                   onClick={() => closeModal(dispatch)}

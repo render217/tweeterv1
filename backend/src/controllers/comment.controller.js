@@ -48,11 +48,26 @@ const getPostComments = async (req, res) => {
     const userId = req.user._id;
     const { postId } = req.params;
 
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4;
+    const skip = (page - 1) * limit;
+
+    const total = await Comment.findOne({ post: postId }).countDocuments();
+    console.log({ total: total }, 'comentens');
+    const pages = Math.ceil(total / limit);
+
+    if (page > pages) {
+        return res.status(200).json(new ApiResponse(200, { comments: [] }));
+    }
+
     isValidMongooseId(postId);
 
     const result = await Comment.aggregate([
         { $match: { post: { $eq: mongooseId(postId) } } },
         ...commentCommonAggregation(req),
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit },
     ]);
 
     res.status(200).json(new ApiResponse(200, { comments: result }));

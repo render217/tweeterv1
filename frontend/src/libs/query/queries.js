@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import {
   QueryClient,
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
@@ -16,6 +17,10 @@ import {
   getProfileByUserId, // done
   followUnfollowUser, // done
   //
+  getUserFollowers,
+  getUserFollowing,
+
+  //
   getPosts, // done | filtering,searching remainnig | pagination
   createPost, // done | photo remaining
   //
@@ -29,9 +34,9 @@ import {
   //
   getComments, // done  | pagination
   addComment, // done
-  likeDislikeComment,
-  explore,
-  bookmarkExplore,
+  likeDislikeComment, // done
+  explore, // done
+  bookmarkExplore, // done
   getUserSuggestion, // done
 } from "../api";
 import { QUERY_KEYS } from "./queryKeys";
@@ -114,18 +119,54 @@ export const useFollowUnFollowUser = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_USER_SUGGESTIONS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_FOLLOWERS_LIST],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_FOLLOWING_LIST],
+      });
     },
+  });
+};
+
+export const useGetFollowersList = (userId) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_FOLLOWERS_LIST, userId],
+    queryFn: () => getUserFollowers(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useGetFollowingList = (userId) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_FOLLOWING_LIST, userId],
+    queryFn: () => getUserFollowing(userId),
+    enabled: !!userId,
   });
 };
 // ============================================================
 // POST QUERIES
 // ============================================================
 export const useGetAllPost = () => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_ALL_POSTS],
-    queryFn: () => getPosts(),
+    queryFn: ({ pageParam = 1 }) => getPosts(pageParam),
+    getNextPageParam: (lastPage, allPage) => {
+      // console.log("lastPage:", lastPage.data.payload.posts.length);
+      // console.log("allPage", allPage.length);
+      return lastPage.data.payload.posts.length
+        ? allPage.length + 1
+        : undefined;
+    },
   });
 };
+
+// export const useGetAllPost = () => {
+//   return useQuery({
+//     queryKey: [QUERY_KEYS.GET_ALL_POSTS],
+//     queryFn: () => getPosts(),
+//   });
+// };
 export const useCreatePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -215,10 +256,15 @@ export const useGetAllTags = () => {
 // COMMENT QUERIES
 // ============================================================
 export const useGetComments = (postId) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_COMMENTS, postId],
-    queryFn: () => getComments(postId),
+    queryFn: ({ pageParam = 1 }) => getComments(postId, pageParam),
     enabled: !!postId,
+    getNextPageParam: (lastPage, pages) => {
+      return lastPage.data.payload.comments.length
+        ? pages.length + 1
+        : undefined;
+    },
   });
 };
 export const useAddComment = () => {

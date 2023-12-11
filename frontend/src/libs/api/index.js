@@ -37,11 +37,11 @@ export const signUpUser = (formData) => {
 export const getUsers = (search) => {
   return API.get(`/profile/users?q=${search}`);
 };
-export const getUserFollowers = () => {
-  return API.get(`/profile/`);
+export const getUserFollowers = (userId) => {
+  return API.get(`/profile/${userId}/followers/list`);
 };
-export const getUserFollowing = () => {
-  return API.get(`/profile/`);
+export const getUserFollowing = (userId) => {
+  return API.get(`/profile/${userId}/following/list`);
 };
 export const getUserSuggestion = () => {
   return API.get("/profile/users/suggestion");
@@ -60,8 +60,8 @@ export const updateUserProfile = (formData) => {
 // ============================================================
 
 // ================ GET ALL POST  ------------------ FILTERING......
-export const getPosts = () => {
-  return API.get(`/post`);
+export const getPosts = (page) => {
+  return API.get(`/post?limit=5&page=${page}`);
 };
 // ================ CREATE POST
 export const createPost = (payload) => {
@@ -95,8 +95,8 @@ export const getAllTags = () => {
 // ============================================================
 
 // ================ GET  POST COMMENTS
-export const getComments = (postId) => {
-  return API.get(`/comment/${postId}`);
+export const getComments = (postId, page) => {
+  return API.get(`/comment/${postId}?page=${page}`);
 };
 
 // ================ CREATE COMMENT
