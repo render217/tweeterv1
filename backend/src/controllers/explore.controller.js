@@ -16,7 +16,7 @@ const getExploreFn = async (req, res) => {
     console.log(req.query);
     const userId = req.user._id;
     const explore = req.query.q;
-    const search = req.query.search;
+    const search = req.query.search || '';
     const tag = req.query?.tag;
     switch (explore) {
         /**

@@ -37,6 +37,13 @@ const commentCommonAggregation = (req) => {
                 },
             },
         },
+        {
+            $set: {
+                isAuthor: {
+                    $cond: [{ $eq: [userId, '$author._id'] }, true, false],
+                },
+            },
+        },
     ];
 };
 /**
@@ -134,15 +141,38 @@ const likeDislikeComment = async (req, res) => {
         )
     );
 };
+/**
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const deleteComment = async (req, res) => {
+    const postId = req.params.postId;
+    const commentId = req.params.commentId;
+    const userId = req.user._id;
 
-// const deleteComment = async (req, res) => {};
+    isValidMongooseId(postId);
+    isValidMongooseId(commentId);
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+        throw new ApiError(404, "comment doesn't exist");
+    }
+    const isAdmin = comment.author.toString() === userId.toString();
+    if (!isAdmin) {
+        throw new ApiError(401, "you can't delete the comment (not author)");
+    }
+
+    const result = await Comment.deleteOne({ _id: commentId });
+    res.status(200).json(new ApiResponse(200, { comment }, 'successfully deleted comment'));
+};
+
 // const updateComment = async (req, res) => {};
-
 module.exports = {
     getPostComments,
     addComment,
     likeDislikeComment,
-    // deleteComment,
+    deleteComment,
     // updateComment,
 };
 

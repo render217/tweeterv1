@@ -14,16 +14,19 @@ export const QUERY_KEYS = {
   // POST_KEYS
   GET_ALL_POSTS: "getAllPosts",
   CREATE_POST: "createPost",
+  // DELETE_POST: "deletePost",
+  // UPDATE_POST: "updatePost",
   GET_USER_POSTS: "getUserPosts",
   LIKE_DISLIKE_POST: "likeDislikePost",
   RETWEET_DETWEET_POST: "retweetDetweetPost",
   BOOKMARK_UNBOOKMARK_POST: "bookmarkUnbookmarkPost",
   GET_ALL_TAGS: "getAllTags",
+
   // COMMENT_KEYS
   GET_COMMENTS: "getComments",
   ADD_COMMENT: "addComment",
   LIKE_DISLIKE_COMMENT: "likeDislikeComment",
-  // DELETE_COMMENT: "deleteComment",
+  DELETE_COMMENT: "deleteComment",
   // UPDATE_COMMENT: "updateComment",
 
   // Explore and bookmark search filter keys

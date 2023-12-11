@@ -6,6 +6,14 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 import CommentLikeAction from "./CommentLikeAction";
 import { formatDateFromNow } from "../../utils";
+import { useDeleteComment } from "../../libs/query/queries";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faDeleteLeft,
+  faTrash,
+  faTrashAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 
 export default function CommentCard({ comment }) {
   const {
@@ -15,9 +23,21 @@ export default function CommentCard({ comment }) {
     content,
     likes,
     isLiked,
+    isAuthor,
     createdAt,
   } = comment;
 
+  const { mutateAsync: deleteComment, isPending } = useDeleteComment();
+
+  const handleDeleteComment = async () => {
+    if (isPending) return;
+    try {
+      const { data } = await deleteComment({ postId, commentId });
+      toast.success(data.message || "soccessfully deleted....");
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const formatedDate = formatDateFromNow(createdAt);
   return (
     <>
@@ -45,9 +65,20 @@ export default function CommentCard({ comment }) {
             <p className="text-xs  text-clrGunSmoke">{likes.length} Likes</p>
           </div>
         </div>
+        {isAuthor && (
+          <div className="ml-auto flex flex-col justify-center px-5">
+            <FontAwesomeIcon
+              onClick={() => handleDeleteComment()}
+              icon={faTrashAlt}
+              className={`${
+                isPending
+                  ? "cursor-not-allowed text-clrGunSmoke"
+                  : "cursor-pointer text-clrValentineRed hover:text-clrDarkGrey"
+              }   `}
+            />
+          </div>
+        )}
       </div>
     </>
   );
 }
-
-//  I’ve seen awe-inspiring things that I thought I’d never be able to explain to another person

@@ -9,7 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 export default function Bookmark() {
   const options = [
     { id: 1, link: "Tweets" },
-    { id: 2, link: "TweetAndReplies" },
+    { id: 2, link: "TweetsAndReplies" },
     { id: 3, link: "Media" },
     { id: 4, link: "Likes" },
   ];

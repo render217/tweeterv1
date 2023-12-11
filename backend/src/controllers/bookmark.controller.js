@@ -46,8 +46,8 @@ const getBookmarkFn = async (req, res) => {
          *
          *
          */
-        case 'TweetAndReplies':
-        case 'tweetAndReplies':
+        case 'TweetsAndReplies':
+        case 'tweetsAndReplies':
             const tweetsandReplies = await Comment.aggregate([
                 {
                     $match: {
@@ -76,7 +76,6 @@ const getBookmarkFn = async (req, res) => {
             return res
                 .status(200)
                 .json(new ApiResponse(200, { posts: tweetsandReplies[0]?.posts ?? [] }));
-
         /**
          *
          *
@@ -113,8 +112,20 @@ const getBookmarkFn = async (req, res) => {
             ]);
             return res.status(200).json(new ApiResponse(200, { posts: likedTweets }));
         default:
-            // default is equal to the first switch case 'Tweets' | 'tweets'
-            return res.status(200).json(new ApiResponse(200, { posts: tweets }));
+            const defaultTweets = await Post.aggregate([
+                {
+                    $match: {
+                        $or: [
+                            { author: { $eq: mongooseId(userId) } },
+                            { bookmark: { $in: [mongooseId(userId), '$bookmark'] } },
+                            { retweet: { $in: [mongooseId(userId), '$retweet'] } },
+                        ],
+                    },
+                },
+                ...postCommonAggregation(req),
+                { $sort: { createdAt: -1 } },
+            ]);
+            return res.status(200).json(new ApiResponse(200, { posts: defaultTweets }));
     }
 };
 

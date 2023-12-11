@@ -34,6 +34,7 @@ import {
   //
   getComments, // done  | pagination
   addComment, // done
+  deleteComment,
   likeDislikeComment, // done
   explore, // done
   bookmarkExplore, // done
@@ -297,7 +298,6 @@ export const useLikeDislikeComment = () => {
       return likeDislikeComment(postId, commentId);
     },
     onSuccess: (axiosResponse) => {
-      console.log("scu", axiosResponse);
       const postId = axiosResponse.data.payload.comment.post;
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_COMMENTS, postId],
@@ -311,12 +311,25 @@ export const useLikeDislikeComment = () => {
     },
   });
 };
-// export const useDeleteComment = () => {
-//   return useQuery({
-//     queryKey: [],
-//     queryFn: () => {},
-//   });
-// };
+export const useDeleteComment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ postId, commentId }) => deleteComment(postId, commentId),
+    onSuccess: (axiosResponse) => {
+      const postId = axiosResponse.data.payload.comment.post;
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_COMMENTS, postId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_EXPLORE],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE],
+      });
+    },
+  });
+};
 
 // export const useUpdateComment = () => {
 //   return useQuery({
@@ -343,6 +356,6 @@ export const useBookmarkExplore = ({ type, userId }) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE, userId, type],
     queryFn: () => bookmarkExplore({ type, userId }),
-    enabled: !!userId && !!type,
+    enabled: !!userId,
   });
 };

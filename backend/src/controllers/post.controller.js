@@ -221,12 +221,9 @@ const getAllTags = async (req, res) => {
     res.status(200).json(new ApiResponse(200, { tags: result }, 'successfully fetched all tags'));
 };
 
-const getUsersPosts = async (req, res) => {};
-
 // const updatePost = async (req, res) => {};
 // const deletePost = async (req, res) => {};
-// const getBookmarkedPosts = async (req, res) => {};
-// const getMyPosts = async (req, res) => {};
+
 // const getPostsById = async (req, res) => {};
 // const getPostsByTag = async (req, res) => {};
 
@@ -237,13 +234,11 @@ module.exports = {
     retweetDetweetPost,
     getAllTags,
     getPosts,
-    getUsersPosts,
 
-    // updatePost,
     // deletePost,
-    // getMyPosts,
+    // updatePost,
+
     // getPostsById,
-    // getBookmarkedPosts,
     // getPostsByTag,
 };
 

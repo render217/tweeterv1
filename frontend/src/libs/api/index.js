@@ -111,9 +111,9 @@ export const likeDislikeComment = (postId, commentId) => {
 };
 
 // // ================ DELETE COMMENT
-// export const deleteComment = (postId) => {
-//   return API.delete(`/comment/${postId}`);
-// };
+export const deleteComment = (postId, commentId) => {
+  return API.delete(`/comment/${postId}/delete/${commentId}`);
+};
 
 // // ================ UPDATE COMOMENT
 // export const updateComment = (postId, commentId, payload) => {
