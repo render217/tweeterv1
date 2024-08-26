@@ -1,6 +1,6 @@
-const ApiError = require("../utils/ApiError");
-const { verifyToken } = require("../utils/authUtils");
-const User = require("../models/user.model");
+const ApiError = require('../utils/ApiError');
+const { verifyToken } = require('../utils/authUtils');
+const User = require('../models/user.model');
 /**
  *
  * @param {import("express").Request} req
@@ -9,9 +9,9 @@ const User = require("../models/user.model");
  */
 
 const checkAuth = async (req, res, next) => {
-    const token = req.headers.authorization?.replace("Bearer ", "");
+    const token = req.headers.authorization?.replace('Bearer ', '');
     if (!token) {
-        next(new ApiError(401, "Unauthorized...(no-token)"));
+        next(new ApiError(401, 'Unauthorized.'));
     }
     try {
         const decoded = verifyToken(token);
@@ -22,10 +22,8 @@ const checkAuth = async (req, res, next) => {
         req.user = user;
         next();
     } catch (error) {
-        console.log("TOKEN_ERROR: ", error.message);
-        next(
-            new ApiError(401, error?.message || "Unauthorized..(invalid-token)")
-        );
+        console.log('TOKEN_ERROR: ', error.message);
+        next(new ApiError(401, error?.message || 'Unauthorized.'));
     }
 };
 

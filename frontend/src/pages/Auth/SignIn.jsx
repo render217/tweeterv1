@@ -40,8 +40,8 @@ export default function SignIn() {
       const { followers, following, ...rest } = data.payload.user;
       // handle response
 
-      Cookies.set("token", data.payload.token);
-      Cookies.set("user", JSON.stringify(rest));
+      Cookies.set("tw_token", data.payload.token);
+      Cookies.set("tw_user", JSON.stringify(rest));
 
       setUser(rest);
       setIsAuthenticated(true);

@@ -77,7 +77,9 @@ export default function TweetFeed() {
         });
       })}
       {hasNextPage && <Spinner color="black" size="40px" />}
-      {!hasNextPage && <p className="text-center text-xs">no more content</p>}
+      {!hasNextPage && (
+        <p className="mt-10 text-center text-xs">no more content</p>
+      )}
       {/* {axiosResponse.data.payload.posts.length === 0 && <h1>NO Tweet Yet.</h1>}
       <TweetList tweets={axiosResponse.data.payload.posts} /> */}
     </div>

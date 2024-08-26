@@ -8,6 +8,7 @@ import useTextAreaResize from "../../hooks/useTextAreaResize";
 import { useAddComment } from "../../libs/query/queries";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
+import CONSTANTS from "../../constants";
 export default function AddComment({ addCommentRef, postId, canComment }) {
   const { user } = useAuth();
   const [commentText, setCommentText] = useState("");
@@ -41,7 +42,7 @@ export default function AddComment({ addCommentRef, postId, canComment }) {
       {canComment ? (
         <div className="flex gap-2">
           <div>
-            <Avator img={user.profileImage} />
+            <Avator img={CONSTANTS.publicURL + user.profileImage} />
           </div>
           <form className="w-full" onSubmit={handleAddComment}>
             <div

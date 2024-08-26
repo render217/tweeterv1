@@ -1,5 +1,5 @@
 require('express-async-errors');
-
+require('dotenv').config({ path: './src/config.env' });
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -17,7 +17,12 @@ const errorHandler = require('./middleware/errorHandler');
 //
 
 const corsOption = {
-    origin: ['http://localhost:5174', 'http://localhost:5173', 'http://localhost:4173'],
+    origin: [
+        'http://localhost:5174',
+        'http://localhost:5173',
+        'http://localhost:4173',
+        process.env.FRONTEND_URL,
+    ],
     credentials: true,
 };
 app.use(cors(corsOption));
@@ -34,6 +39,9 @@ app.use('/api/v1/comment', commentRoutes);
 app.use('/api/v1/explore', exploreRoutes);
 app.use('/api/v1/bookmark', bookmarkRoutes);
 //
+app.use('/', (req, res) => {
+    res.send('Tweeter api ok.');
+});
 app.use('*', notFound);
 app.use(errorHandler);
 

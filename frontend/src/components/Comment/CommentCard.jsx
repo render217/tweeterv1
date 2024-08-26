@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import CONSTANTS from "../../constants";
 
 export default function CommentCard({ comment }) {
   const {
@@ -45,7 +46,7 @@ export default function CommentCard({ comment }) {
       <div className="flex gap-4">
         <div>
           {/* <Avator img={"/images/me_profile.jpg"} /> */}
-          <Avator img={profileImage} />
+          <Avator img={CONSTANTS.publicURL + profileImage} />
         </div>
         <div className="">
           <div className=" flex items-center gap-2">

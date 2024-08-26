@@ -55,7 +55,9 @@ export default function UserCard({
           <div className="h-24 overflow-hidden rounded-xl">
             <img
               className="w-full object-fill"
-              src={coverImage || "/images/background-1.jpg"}
+              src={
+                CONSTANTS.publicURL + coverImage || "/images/background-1.jpg"
+              }
               alt=""
             />
           </div>

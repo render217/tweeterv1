@@ -14,6 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
+import CONSTANTS from "../../constants";
 
 export default function TweetCard({ tweet }) {
   const { user } = useAuth();
@@ -54,7 +55,7 @@ export default function TweetCard({ tweet }) {
             <img
               className="h-full w-full object-fill"
               // src="/images/profile_img.jpg"
-              src={profileImage}
+              src={CONSTANTS.publicURL + profileImage}
               alt=""
             />
           </div>
@@ -85,7 +86,7 @@ export default function TweetCard({ tweet }) {
             <img
               className="h-full w-full object-fill"
               // src="/images/background-2.jpg"
-              src={imageUrl}
+              src={CONSTANTS.publicURL + imageUrl}
               alt=""
             />
           </div>

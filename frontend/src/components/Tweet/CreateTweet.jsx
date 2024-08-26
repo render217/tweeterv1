@@ -11,6 +11,7 @@ import { checkImageValidity, filterForTagFromContent } from "../../utils";
 import { useCreatePost } from "../../libs/query/queries";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
+import CONSTANTS from "../../constants";
 const AUDIENCE = { everyone: "everyone", following: "following" };
 export default function CreateTweet() {
   const { user } = useAuth();
@@ -79,7 +80,7 @@ export default function CreateTweet() {
               <img
                 className="object-fit h-full w-full"
                 // src="./images/profile_img.jpg"
-                src={user.profileImage}
+                src={CONSTANTS.publicURL + user.profileImage}
                 alt=""
               />
             </div>

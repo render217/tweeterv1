@@ -9,7 +9,7 @@ export function checkImageValidity(type) {
 }
 
 export const CookieStorage = {
-  setCookie: (key = "token", payload) => {
+  setCookie: (key = "tw_token", payload) => {
     Cookies.set(key, payload);
   },
   getCookie: (key) => {

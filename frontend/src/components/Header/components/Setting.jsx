@@ -10,6 +10,7 @@ import useOutsideClick from "../../../hooks/useOutsideClick";
 import { NavLink } from "react-router-dom";
 import { INITIAL_USER, useAuth } from "../../../context/AuthContext";
 import { CookieStorage } from "../../../utils";
+import CONSTANTS from "../../../constants";
 export function Setting() {
   const [showOption, setShowOption] = useState(false);
   const closeOption = () => setShowOption(false);
@@ -30,7 +31,11 @@ export function Setting() {
           className="h-10 w-10 cursor-pointer overflow-hidden rounded-full"
           onClick={openOption}>
           {/* <img className="object-fill" src="/images/profile_img.jpg" alt="" /> */}
-          <img className="object-fill" src={user?.profileImage} alt="" />
+          <img
+            className="object-fill"
+            src={CONSTANTS.publicURL + user?.profileImage}
+            alt=""
+          />
         </div>
         <div
           onClick={openOption}

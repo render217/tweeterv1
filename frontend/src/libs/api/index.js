@@ -1,8 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-// const BASE_URL = import.meta.VITE_BACKEND_URL;
-const BASE_URL = "http://localhost:3500/api/v1";
+const BASE_URL = import.meta.VITE_BACKEND_URL;
+// const BASE_URL = "http://localhost:3500/api/v1";
 
 const API = axios.create({
   baseURL: BASE_URL,
@@ -11,7 +11,7 @@ const API = axios.create({
 
 API.interceptors.request.use(
   function (config) {
-    const token = Cookies.get("token") || null;
+    const token = Cookies.get("tw_token") || null;
     config.headers.Authorization = `Bearer ${token}`;
     return config;
   },

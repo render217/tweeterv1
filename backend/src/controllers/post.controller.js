@@ -15,7 +15,7 @@ const { postCommonAggregation } = require('./common');
  * @param {import("express").Request} req
  * @param {import("express").Response} res
  */
-const createPost = async (req, res) => {
+const createPost2 = async (req, res) => {
     const userId = req.user._id;
     MulterUpload.single('image')(req, res, async (err) => {
         const { content, tags, audience } = req.body;
@@ -65,6 +65,58 @@ const createPost = async (req, res) => {
             ...postCommonAggregation(req),
         ]);
         res.status(201).json(new ApiResponse(200, { post: result[0] }, 'successfully tweeted'));
+    });
+};
+
+/**
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const createPost = async (req, res) => {
+    const userId = req.user._id;
+    MulterUpload.single('image')(req, res, async (err) => {
+        const { content, tags, audience } = req.body;
+        console.log('POST PAYLOAD >>> ', req.body);
+        if (!content) {
+            return res
+                .status(400)
+                .json({ statusCode: 400, message: 'Content is Required', errors: [] });
+        }
+        if (err instanceof multer.MulterError) {
+            switch (err.code) {
+                case 'LIMIT_UNEXPECTED_FILE':
+                    console.log("didn't recieved file named image but it's ok");
+                    break;
+                case 'LIMIT_FILE_SIZE':
+                    return res.status(400).json(new ApiError(400, 'File too large'));
+                default:
+                    break;
+            }
+        } else if (err) {
+            console.log(err);
+            return res.status(500).json(new ApiError(500, err?.message || 'Something went wrong'));
+        }
+
+        const newPost = await Post.create({
+            content: content,
+            audience: audience,
+            author: userId,
+            tags: tags?.length > 0 ? [...tags.split(',')] : [],
+        });
+        const image = req.file;
+        if (image) {
+            console.log('IMAGE PAYLOAD >>>> ', image);
+            newPost.imageUrl = image.filename;
+        }
+        await newPost.save();
+
+        const result = await Post.aggregate([
+            { $match: { _id: newPost._id } },
+            ...postCommonAggregation(req),
+        ]);
+        const payload = result[0];
+        res.status(201).json(new ApiResponse(200, { post: payload }, 'successfully tweeted'));
     });
 };
 

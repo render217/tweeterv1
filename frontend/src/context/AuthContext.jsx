@@ -51,9 +51,9 @@ export default function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    const userCookie = Cookies.get("user");
+    const userCookie = Cookies.get("tw_user");
     const _user = userCookie ? JSON.parse(userCookie) : null;
-    const _token = Cookies.get("token");
+    const _token = Cookies.get("tw_token");
 
     if (_token && _user) {
       setUser(_user);
