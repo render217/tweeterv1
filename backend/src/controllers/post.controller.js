@@ -15,7 +15,7 @@ const { postCommonAggregation } = require('./common');
  * @param {import("express").Request} req
  * @param {import("express").Response} res
  */
-const createPost2 = async (req, res) => {
+const createPost = async (req, res) => {
     const userId = req.user._id;
     MulterUpload.single('image')(req, res, async (err) => {
         const { content, tags, audience } = req.body;
@@ -73,7 +73,8 @@ const createPost2 = async (req, res) => {
  * @param {import("express").Request} req
  * @param {import("express").Response} res
  */
-const createPost = async (req, res) => {
+// saves image on /images...
+const createPost2 = async (req, res) => {
     const userId = req.user._id;
     MulterUpload.single('image')(req, res, async (err) => {
         const { content, tags, audience } = req.body;

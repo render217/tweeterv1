@@ -1,5 +1,5 @@
 require('express-async-errors');
-require('dotenv').config({ path: './src/config.env' });
+require('dotenv').config({ path: './config.env' });
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
