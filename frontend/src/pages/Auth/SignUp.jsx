@@ -35,7 +35,11 @@ export default function SignUp() {
       toast.success(data?.message);
       navigate("/signIn");
     } catch (error) {
-      console.log(error?.response?.data?.message);
+      toast.error(
+        error?.response?.data?.message ||
+          "Something went wrong while Signing Up"
+      );
+      // console.log(error?.response?.data?.message);
     }
   };
   return (

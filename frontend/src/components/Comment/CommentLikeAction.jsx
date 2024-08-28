@@ -18,9 +18,9 @@ export default function CommentLikeAction({ isLiked, postId, commentId }) {
     try {
       const { data } = await likeDislikeComment({ postId, commentId });
       //   toast.success(data.message);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
-      console.log("error");
+      // console.log("error");
     }
   };
   return (

@@ -17,7 +17,7 @@ export default function Bookmark({ postId, isBookmarked }) {
       const { data } = await bookmarkUnbookmarkPost(postId);
       toast.success(data.message);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

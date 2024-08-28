@@ -19,7 +19,7 @@ export default function Explore() {
     { id: 4, link: "Media" },
   ];
   const location = useLocation();
-  console.log("explore location", location);
+  // console.log("explore location", location);
   //
   const [selected, setSelected] = useState(location.state?.selected || 1);
 

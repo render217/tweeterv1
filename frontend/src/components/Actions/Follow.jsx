@@ -15,7 +15,7 @@ export default function Follow({ isFollowed, userId }) {
       const { data } = await followUnfollow(userId);
       toast.success(data.message);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

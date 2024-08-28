@@ -20,7 +20,7 @@ export default function Like({ postId, isLiked }) {
       const { data } = await likeUnlikePost(postId);
       toast.success(data.message);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

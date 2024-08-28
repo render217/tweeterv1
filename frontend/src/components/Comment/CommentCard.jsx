@@ -37,7 +37,7 @@ export default function CommentCard({ comment }) {
       const { data } = await deleteComment({ postId, commentId });
       toast.success(data.message || "soccessfully deleted....");
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   };
   const formatedDate = formatDateFromNow(createdAt);

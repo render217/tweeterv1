@@ -101,7 +101,7 @@ export const getComments = (postId, page) => {
 
 // ================ CREATE COMMENT
 export const addComment = (postId, payload) => {
-  console.log("api", postId, payload);
+  // console.log("api", postId, payload);
   return API.post(`/comment/${postId}`, payload);
 };
 

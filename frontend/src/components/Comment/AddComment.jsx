@@ -33,7 +33,7 @@ export default function AddComment({ addCommentRef, postId, canComment }) {
       toast.success(data.message);
       setCommentText("");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   return (

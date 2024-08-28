@@ -34,7 +34,7 @@ export default function SignIn() {
     }
     try {
       const { data } = await signInUser({ email, password });
-      console.log(data);
+      // console.log(data);
       toast.success(data.message);
       // eslint-disable-next-line no-unused-vars
       const { followers, following, ...rest } = data.payload.user;
@@ -50,7 +50,10 @@ export default function SignIn() {
       navigate("/home", { replace: true });
     } catch (error) {
       // console.log(error?.response?.data?.message);
-      toast.error(error?.response?.data?.message);
+      toast.error(
+        error?.response?.data?.message ||
+          "Something went wrong while Signing In"
+      );
     }
   };
   return (

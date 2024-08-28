@@ -276,7 +276,7 @@ export const useAddComment = () => {
       return addComment(postId, { content });
     },
     onSuccess: (axiosResponse) => {
-      console.log("scu", axiosResponse);
+      // console.log("scu", axiosResponse);
       const postId = axiosResponse.data.payload.comment.post;
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_COMMENTS, postId],

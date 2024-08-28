@@ -28,7 +28,7 @@ export default function Followers({ userId }) {
   }
 
   const followers = axiosResponseData.data.payload.followers;
-  console.log({ followers });
+  // console.log({ followers });
   return (
     <div className="space-y-5">
       {followers.map((user) => (

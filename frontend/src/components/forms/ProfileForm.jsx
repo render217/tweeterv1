@@ -81,7 +81,7 @@ export default function ProfileForm({
             )}
             <input
               onChange={(e) => {
-                console.log(e.target.files[0]);
+                // console.log(e.target.files[0]);
                 const isValid = checkImageValidity(e.target.files[0].type);
                 if (!isValid) {
                   toast.error("Only Image is allowed");
@@ -130,7 +130,7 @@ export default function ProfileForm({
             )}
             <input
               onChange={(e) => {
-                console.log(e.target.files[0]);
+                // console.log(e.target.files[0]);
                 const isValid = checkImageValidity(e.target.files[0].type);
                 if (!isValid) {
                   alert("Only upload Image");
