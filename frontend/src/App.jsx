@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AppLayout from "./layout/AppLayout";
 import {
   Bookmark,
@@ -21,6 +21,7 @@ export default function App() {
           <Route path="/signIn" element={<SignIn />} />
         </Route>
         <Route path="/" element={<AppLayout />}>
+          <Route index element={<Navigate to="/home" replace />} />
           <Route path="home" element={<Home />} />
           <Route path="profile/:id" element={<Profile />} />
           <Route path="bookmark" element={<Bookmark />} />
