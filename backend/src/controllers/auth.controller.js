@@ -1,12 +1,8 @@
-const {
-    generateToken,
-    hashPassword,
-    verifyPassword,
-} = require("../utils/authUtils");
+const { generateToken, hashPassword, verifyPassword } = require('../utils/authUtils');
 
-const User = require("../models/user.model");
-const ApiResponse = require("../utils/ApiResponse");
-const ApiError = require("../utils/ApiError");
+const User = require('../models/user.model');
+const ApiResponse = require('../utils/ApiResponse');
+const ApiError = require('../utils/ApiError');
 
 /**
  *
@@ -17,22 +13,24 @@ exports.signUpUser = async (req, res) => {
     const { email, username, password } = req.body;
 
     if (!email || !username || !password) {
-        throw new ApiError(400, "All Fields are requried");
+        throw new ApiError(400, 'All Fields are requried');
     }
 
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
 
     if (existingUser) {
-        throw new ApiError(400, "User already exists.");
+        throw new ApiError(400, 'User already exists.');
     }
     const hashedPassword = hashPassword(password);
     const newUser = await User.create({
         username,
         email,
         password: hashedPassword,
+        followers: [],
+        following: [],
     });
-    console.log("newUser 🧑:", newUser);
-    res.status(200).send(new ApiResponse(200, {}, "Successfully registered"));
+    console.log('newUser 🧑:', newUser);
+    res.status(200).send(new ApiResponse(200, {}, 'Successfully registered'));
 };
 
 /**
@@ -43,16 +41,16 @@ exports.signUpUser = async (req, res) => {
 exports.signInUser = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        throw new ApiError(400, "All Fields are requried");
+        throw new ApiError(400, 'All Fields are requried');
     }
     const foundUser = await User.findOne({ email });
     if (!foundUser) {
-        throw new ApiError(400, "Invalid credential..(no-user)");
+        throw new ApiError(400, 'Invalid credential.');
     }
 
     const isValidPassword = verifyPassword(password, foundUser.password);
     if (!isValidPassword) {
-        throw new ApiError(403, "Invalid credentials...(incorrect-pswd)");
+        throw new ApiError(403, 'Invalid credentials.');
     }
 
     foundUser.password = undefined;
@@ -67,11 +65,7 @@ exports.signInUser = async (req, res) => {
     const token = generateToken(payload);
 
     res.status(200).json(
-        new ApiResponse(
-            200,
-            { user: foundUser, token },
-            "successfully signed in."
-        )
+        new ApiResponse(200, { user: foundUser, token }, 'successfully signed in.')
     );
 };
 

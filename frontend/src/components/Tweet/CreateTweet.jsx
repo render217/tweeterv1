@@ -11,7 +11,7 @@ import { checkImageValidity, filterForTagFromContent } from "../../utils";
 import { useCreatePost } from "../../libs/query/queries";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
-import CONSTANTS from "../../constants";
+
 const AUDIENCE = { everyone: "everyone", following: "following" };
 export default function CreateTweet() {
   const { user } = useAuth();
@@ -37,9 +37,11 @@ export default function CreateTweet() {
   const [showImagePreview, setShowImagePreview] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
 
-  const { mutateAsync: uploadPost, isPending } = useCreatePost();
+  const { mutateAsync: uploadPost, isPending: isCreatingPost } =
+    useCreatePost();
 
   const handleSubmitTweet = async (e) => {
+    if (isCreatingPost) return;
     e.preventDefault();
 
     const tags = filterForTagFromContent(tweet);
@@ -56,10 +58,10 @@ export default function CreateTweet() {
     formData.append("tags", tags);
     try {
       const { data } = await uploadPost(formData);
-      console.log("createTweet Response", data);
+      // console.log("createTweet Response", data);
       toast.success(data?.message);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error(error?.response?.data?.message);
     }
 
@@ -80,7 +82,7 @@ export default function CreateTweet() {
               <img
                 className="object-fit h-full w-full"
                 // src="./images/profile_img.jpg"
-                src={CONSTANTS.publicURL + user.profileImage}
+                src={user.profileImage}
                 alt=""
               />
             </div>
@@ -107,11 +109,13 @@ export default function CreateTweet() {
               {/* image file uploader */}
               <div
                 onClick={() => {
+                  if (isCreatingPost) return;
                   imageRef.current.click();
                 }}
                 className="cursor-pointer text-lg text-clrClearBlue">
                 <FontAwesomeIcon icon={faImage} />
                 <input
+                  disabled={isCreatingPost}
                   onChange={(e) => {
                     console.log(e.target.files[0]);
                     const isValid = checkImageValidity(e.target.files[0].type);
@@ -181,22 +185,25 @@ export default function CreateTweet() {
               {(tweet || tweetImage) && (
                 <button
                   type="reset"
+                  disabled={isCreatingPost}
                   onClick={() => {
                     setTweet("");
                     setTweetImage("");
                     setAudience(AUDIENCE.everyone);
                   }}
-                  className="w-20 cursor-pointer rounded-md bg-clrGunSmoke py-2 text-center text-xs text-white">
+                  className={` ${
+                    isCreatingPost ? "cursor-not-allowed opacity-40" : ""
+                  }  w-20 cursor-pointer rounded-md bg-clrGunSmoke py-2 text-center text-xs text-white`}>
                   Cancel
                 </button>
               )}
               <button
-                disabled={isPending}
+                disabled={isCreatingPost}
                 type="submit"
                 className={`${
-                  isPending ? "cursor-not-allowed opacity-40" : ""
+                  isCreatingPost ? "cursor-not-allowed opacity-40" : ""
                 } w-20  rounded-md bg-clrClearBlue py-2 text-center text-xs text-white `}>
-                Tweet
+                {isCreatingPost ? "Tweeting..." : "Tweet"}
               </button>
             </div>
           </div>

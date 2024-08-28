@@ -122,7 +122,7 @@ export default function Profile() {
   // console.log(`profile of ${username}`, axiosResponse.data.payload);
   const handleEditProfileSubmit = async (payload) => {
     const { bio, username, profileImage, coverImage } = payload;
-    console.log({ bio, username, profileImage, coverImage });
+    // console.log({ bio, username, profileImage, coverImage });
     const formData = new FormData();
     formData.append("bio", bio);
     formData.append("username", username);
@@ -135,7 +135,7 @@ export default function Profile() {
 
     try {
       const { data } = await updateProfile(formData);
-      console.log(data.payload);
+      // console.log(data.payload);
       setUser((user) => ({
         ...user,
         username: data.payload.user.username,
@@ -147,7 +147,7 @@ export default function Profile() {
       refetch();
       closeEditProfile(dispatch);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error(
         error?.response?.data?.message ||
           "Something went wrong while updating your profile"
@@ -162,9 +162,7 @@ export default function Profile() {
           <div className="absolute h-full w-full">
             <img
               className="h-full w-full object-cover"
-              src={
-                CONSTANTS.publicURL + coverImage || "/images/background-1.jpg"
-              }
+              src={coverImage || "/images/background-1.jpg"}
               alt=""
             />
           </div>
@@ -178,10 +176,7 @@ export default function Profile() {
                         <img
                           onClick={() => openShowProfilePic(dispatch)}
                           className="h-full w-full cursor-pointer object-cover"
-                          src={
-                            CONSTANTS.publicURL + profileImage ||
-                            "/images/profile_img.jpg"
-                          }
+                          src={profileImage || "/images/profile_img.jpg"}
                           alt="profile image"
                         />
                       </div>
@@ -372,7 +367,7 @@ export default function Profile() {
                   ref={outsideModalRef}>
                   <img
                     className="h-full w-full cursor-pointer object-cover"
-                    src={CONSTANTS.publicURL + profileImage}
+                    src={profileImage}
                     alt="profile image"
                   />
                 </div>

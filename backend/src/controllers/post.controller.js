@@ -54,7 +54,9 @@ const createPost = async (req, res) => {
                 newPost.imageUrl = uploadResponse.secure_url;
                 newPost.imagePublicId = uploadResponse.public_id;
                 fs.unlinkSync(image.path);
+                console.log('image uploaded to cloudinary');
             } catch (error) {
+                console.log('Error uploading to cloudinary');
                 return res.status(400).json(new ApiError(400, error?.message || 'Upload failed'));
             }
         }

@@ -62,6 +62,7 @@ export default function SignIn() {
             onSubmit={handleLoginSubmit}
             className="flex flex-col gap-4 px-8 pb-3 pt-3">
             <Input
+              disabled={isPending}
               value={email}
               onChange={handleInputChange("email")}
               label={"Email"}
@@ -69,6 +70,7 @@ export default function SignIn() {
             />
 
             <Input
+              disabled={isPending}
               value={password}
               onChange={handleInputChange("password")}
               label={"Password"}

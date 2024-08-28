@@ -11,7 +11,7 @@ import {
 } from "./pages";
 import { ToastContainer } from "react-toastify";
 import AuthLayout from "./layout/AuthLayout";
-import Setting from "./pages/Settings";
+// import Setting from "./pages/Settings";
 export default function App() {
   return (
     <>
@@ -25,7 +25,7 @@ export default function App() {
           <Route path="profile/:id" element={<Profile />} />
           <Route path="bookmark" element={<Bookmark />} />
           <Route path="explore" element={<Explore />} />
-          <Route path="setting" element={<Setting />} />
+          {/* <Route path="setting" element={<Setting />} /> */}
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

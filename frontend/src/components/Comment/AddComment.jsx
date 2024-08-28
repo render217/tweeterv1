@@ -8,7 +8,8 @@ import useTextAreaResize from "../../hooks/useTextAreaResize";
 import { useAddComment } from "../../libs/query/queries";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
-import CONSTANTS from "../../constants";
+import { CircleLoader, ClipLoader } from "react-spinners";
+
 export default function AddComment({ addCommentRef, postId, canComment }) {
   const { user } = useAuth();
   const [commentText, setCommentText] = useState("");
@@ -22,9 +23,7 @@ export default function AddComment({ addCommentRef, postId, canComment }) {
 
   const handleAddComment = async (e) => {
     e.preventDefault();
-    if (!commentText) {
-      return;
-    }
+
     if (isPending || !commentText) {
       return;
     }
@@ -42,7 +41,7 @@ export default function AddComment({ addCommentRef, postId, canComment }) {
       {canComment ? (
         <div className="flex gap-2">
           <div>
-            <Avator img={CONSTANTS.publicURL + user.profileImage} />
+            <Avator img={user.profileImage} />
           </div>
           <form className="w-full" onSubmit={handleAddComment}>
             <div
@@ -50,6 +49,7 @@ export default function AddComment({ addCommentRef, postId, canComment }) {
               onClick={() => commentRef.current.focus()}
               className="flex h-fit w-full items-start gap-2 rounded-md border px-2 py-2">
               <textarea
+                disabled={isPending}
                 ref={commentRef}
                 className="h-fit flex-1 resize-none overflow-hidden text-xs outline-none "
                 name="tweet"
@@ -63,7 +63,11 @@ export default function AddComment({ addCommentRef, postId, canComment }) {
                 className="cursor-pointer text-clrFrenchGrey"
               /> */}
               <button>
-                <FontAwesomeIcon icon={faPaperPlane} />
+                {isPending ? (
+                  <ClipLoader size={10} />
+                ) : (
+                  <FontAwesomeIcon icon={faPaperPlane} />
+                )}
               </button>
             </div>
           </form>

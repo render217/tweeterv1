@@ -14,7 +14,7 @@ export default function Following({ userId }) {
 
   if (isPending && !isError) {
     return (
-      <div>
+      <div className="h-[300px]">
         <Spinner size="40px" color="black" />
       </div>
     );

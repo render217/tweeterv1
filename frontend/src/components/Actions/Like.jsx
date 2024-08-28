@@ -5,6 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useLikeDislikePost } from "../../libs/query/queries";
 import { toast } from "react-toastify";
+import { LoadingSpinner } from "../Loading";
+
+import { CircleLoader, ClipLoader } from "react-spinners";
+import ActionLoader from "./ActionLoader";
 export default function Like({ postId, isLiked }) {
   const { mutateAsync: likeUnlikePost, isPending } = useLikeDislikePost();
 
@@ -22,13 +26,22 @@ export default function Like({ postId, isLiked }) {
 
   return (
     <ActionWrapper onClick={handleLikeUnlikeFn}>
-      <FontAwesomeIcon
-        icon={faHeart}
-        className={`${isLiked ? "text-clrValentineRed" : ""} `}
-      />
-      <p className={`${isLiked ? "text-clrValentineRed" : ""} hidden xs:block`}>
-        {isLiked ? "Liked" : "Like"}
-      </p>
+      {isPending ? (
+        <ActionLoader />
+      ) : (
+        <>
+          <FontAwesomeIcon
+            icon={faHeart}
+            className={`${isLiked ? "text-clrValentineRed" : ""} `}
+          />
+          <p
+            className={`${
+              isLiked ? "text-clrValentineRed" : ""
+            } hidden xs:block`}>
+            {isLiked ? "Liked" : "Like"}
+          </p>
+        </>
+      )}
     </ActionWrapper>
   );
 }

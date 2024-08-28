@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import { Follow } from "../Actions";
-import CONSTANTS from "../../constants";
+import { useAuth } from "../../context/AuthContext";
 
 export default function UserCard({
   showBio = false,
@@ -17,16 +17,15 @@ export default function UserCard({
     followers,
     isFollowed,
   } = user;
+  const { user: loggedInUser } = useAuth();
+  const isMe = loggedInUser._id.toString() === userId.toString();
   return (
     <div className="rounded-lg border bg-white p-3">
       <div className="flex flex-wrap items-center justify-start gap-2   ">
         <div className="h-11 w-11 overflow-hidden rounded-2xl">
           <img
             className="object-fit h-full w-full"
-            src={
-              `${CONSTANTS.publicURL}${profileImage}` ||
-              "/images/profile_img.jpg"
-            }
+            src={`${profileImage}` || "/images/profile_img.jpg"}
             alt=""
           />
         </div>
@@ -40,7 +39,7 @@ export default function UserCard({
         </div>
         <div className="flex-1"></div>
         <div className=" ">
-          <Follow isFollowed={isFollowed} userId={userId} />
+          {!isMe && <Follow isFollowed={isFollowed} userId={userId} />}
         </div>
       </div>
 
@@ -53,13 +52,7 @@ export default function UserCard({
         )}
         {showBanner && (
           <div className="h-24 overflow-hidden rounded-xl">
-            <img
-              className="w-full object-fill"
-              src={
-                CONSTANTS.publicURL + coverImage || "/images/background-1.jpg"
-              }
-              alt=""
-            />
+            <img className="w-full object-fill" src={coverImage} alt="" />
           </div>
         )}
       </div>

@@ -14,7 +14,7 @@ export default function Followers({ userId }) {
 
   if (isPending && !isError) {
     return (
-      <div>
+      <div className="size-full place-content-center">
         <Spinner size="40px" color="black" />
       </div>
     );

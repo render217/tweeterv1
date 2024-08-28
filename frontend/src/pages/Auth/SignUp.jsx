@@ -24,8 +24,9 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // check if all fields are not empty
+    if (isPending) return;
     if (!email || !password || !username) {
+      // check if all fields are not empty
       toast.error("All Fields are required");
       return;
     }
@@ -46,18 +47,21 @@ export default function SignUp() {
             onSubmit={handleSubmit}
             className="flex flex-col gap-4 px-8 pb-3 pt-3">
             <Input
+              disabled={isPending}
               label={"Username"}
               type="text"
               value={formData.username}
               onChange={handleInputChange("username")}
             />
             <Input
+              disabled={isPending}
               label={"Email"}
               type="email"
               value={formData.email}
               onChange={handleInputChange("email")}
             />
             <Input
+              disabled={isPending}
               label={"Password"}
               type="password"
               value={formData.password}

@@ -82,7 +82,7 @@ const postCommonAggregation = (req) => {
             },
         },
         {
-            $unset: ['author.followinsg'],
+            $unset: ['author.following'],
         },
     ];
 };

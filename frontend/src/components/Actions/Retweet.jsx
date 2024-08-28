@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
 import { useRetweetDetweetPost } from "../../libs/query/queries";
 import { toast } from "react-toastify";
+import ActionLoader from "./ActionLoader";
 export default function Retweet({ postId, isRetweeted }) {
   const { mutateAsync: retweetDetweetPost, isPending } =
     useRetweetDetweetPost();
@@ -22,14 +23,22 @@ export default function Retweet({ postId, isRetweeted }) {
 
   return (
     <ActionWrapper onClick={handleRetweetDetweet}>
-      <FontAwesomeIcon
-        icon={faRotate}
-        className={`${isRetweeted ? "text-clrJadeGreen" : ""} `}
-      />
-      <p
-        className={`${isRetweeted ? "text-clrJadeGreen" : ""} hidden xs:block`}>
-        {isRetweeted ? "Retweeted" : "Retweet"}
-      </p>
+      {isPending ? (
+        <ActionLoader />
+      ) : (
+        <>
+          <FontAwesomeIcon
+            icon={faRotate}
+            className={`${isRetweeted ? "text-clrJadeGreen" : ""} `}
+          />
+          <p
+            className={`${
+              isRetweeted ? "text-clrJadeGreen" : ""
+            } hidden xs:block`}>
+            {isRetweeted ? "Retweeted" : "Retweet"}
+          </p>
+        </>
+      )}
     </ActionWrapper>
   );
 }

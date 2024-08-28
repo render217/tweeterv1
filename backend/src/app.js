@@ -38,11 +38,12 @@ app.use('/api/v1/comment', commentRoutes);
 //
 app.use('/api/v1/explore', exploreRoutes);
 app.use('/api/v1/bookmark', bookmarkRoutes);
-//
-app.use('/', (req, res) => {
-    res.send('Tweeter api ok.');
+
+app.use(express.static(path.join(__dirname, '..', '..', 'frontend/dist')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'dist', 'index.html'));
 });
-app.use('*', notFound);
+
 app.use(errorHandler);
 
 module.exports = app;

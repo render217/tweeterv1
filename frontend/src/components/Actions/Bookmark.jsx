@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { useBookmarkUnBookmarkPost } from "../../libs/query/queries";
 import { toast } from "react-toastify";
+import ActionLoader from "./ActionLoader";
 export default function Bookmark({ postId, isBookmarked }) {
   const { mutateAsync: bookmarkUnbookmarkPost, isPending } =
     useBookmarkUnBookmarkPost();
@@ -22,16 +23,22 @@ export default function Bookmark({ postId, isBookmarked }) {
 
   return (
     <ActionWrapper onClick={handleBookmarkUnBookmarkFn}>
-      <FontAwesomeIcon
-        icon={faBookmark}
-        className={`${isBookmarked ? "text-clrClearBlue" : ""}`}
-      />
-      <p
-        className={`${
-          isBookmarked ? "text-clrClearBlue" : ""
-        } hidden xs:block`}>
-        {isBookmarked ? "Saved" : "Save"}
-      </p>
+      {isPending ? (
+        <ActionLoader />
+      ) : (
+        <>
+          <FontAwesomeIcon
+            icon={faBookmark}
+            className={`${isBookmarked ? "text-clrClearBlue" : ""}`}
+          />
+          <p
+            className={`${
+              isBookmarked ? "text-clrClearBlue" : ""
+            } hidden xs:block`}>
+            {isBookmarked ? "Saved" : "Save"}
+          </p>
+        </>
+      )}
     </ActionWrapper>
   );
 }

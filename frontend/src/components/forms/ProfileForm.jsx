@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { checkImageValidity } from "../../utils";
 import { toast } from "react-toastify";
-import CONSTANTS from "../../constants";
+
 export default function ProfileForm({
   userData,
   onSubmit,
@@ -17,10 +17,10 @@ export default function ProfileForm({
   const [username, setUsername] = useState(userData.username || "");
 
   const [profileImage, setProfileImage] = useState(
-    CONSTANTS.publicURL + userData.profileImage || "/images/profile_img.jpg"
+    userData.profileImage || "/images/profile_img.jpg"
   );
   const [bannerImage, setBannerImage] = useState(
-    CONSTANTS.publicURL + userData.coverImage || "/images/background-1.jpg"
+    userData.coverImage || "/images/background-1.jpg"
   );
 
   const [showBannerPreview, setShowBannerPreview] = useState(false);

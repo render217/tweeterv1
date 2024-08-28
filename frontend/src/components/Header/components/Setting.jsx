@@ -2,15 +2,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faCircleUser,
-  faGear,
+  // faGear,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import useOutsideClick from "../../../hooks/useOutsideClick";
 import { NavLink } from "react-router-dom";
 import { INITIAL_USER, useAuth } from "../../../context/AuthContext";
-import { CookieStorage } from "../../../utils";
-import CONSTANTS from "../../../constants";
+
+import Cookies from "js-cookie";
 export function Setting() {
   const [showOption, setShowOption] = useState(false);
   const closeOption = () => setShowOption(false);
@@ -21,7 +21,9 @@ export function Setting() {
   const handleLogout = () => {
     setUser(INITIAL_USER);
     setIsAuthenticated(false);
-    CookieStorage.clearCookie("token");
+
+    Cookies.remove("tw_token");
+    Cookies.remove("tw_user");
   };
 
   return (
@@ -31,11 +33,7 @@ export function Setting() {
           className="h-10 w-10 cursor-pointer overflow-hidden rounded-full"
           onClick={openOption}>
           {/* <img className="object-fill" src="/images/profile_img.jpg" alt="" /> */}
-          <img
-            className="object-fill"
-            src={CONSTANTS.publicURL + user?.profileImage}
-            alt=""
-          />
+          <img className="object-fill" src={user?.profileImage} alt="" />
         </div>
         <div
           onClick={openOption}
@@ -65,7 +63,7 @@ export function Setting() {
               <FontAwesomeIcon className="text-lg " icon={faCircleUser} />
               <p>My Profile</p>
             </NavLink>
-            <NavLink
+            {/* <NavLink
               to={`/setting`}
               className={({ isActive }) =>
                 `${
@@ -76,7 +74,7 @@ export function Setting() {
               }>
               <FontAwesomeIcon className="text-lg " icon={faGear} />
               <p>Settings</p>
-            </NavLink>
+            </NavLink> */}
 
             <hr className="my-1 border" />
             <div

@@ -50,7 +50,7 @@ const getProfileByUserId = async (req, res) => {
  * @param {import("express").Request} req
  * @param {import("express").Response} res
  */
-const updateSocialProfile2 = async (req, res) => {
+const updateSocialProfile = async (req, res) => {
     const userId = req.user._id;
     MulterUpload.fields([
         { name: 'coverImage', maxCount: 1 },
@@ -138,7 +138,7 @@ const updateSocialProfile2 = async (req, res) => {
  * @param {import("express").Request} req
  * @param {import("express").Response} res
  */
-const updateSocialProfile = async (req, res) => {
+const updateSocialProfile2 = async (req, res) => {
     const userId = req.user._id;
     MulterUpload.fields([
         { name: 'coverImage', maxCount: 1 },

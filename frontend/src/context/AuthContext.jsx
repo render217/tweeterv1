@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { getCurrentUser } from "../libs/api";
 import { LoadingProgress } from "../components/Loading";
 import Cookies from "js-cookie";
+import { useLocation, useNavigate } from "react-router-dom";
 export const INITIAL_USER = {
   _id: "",
   username: "",
@@ -23,7 +24,8 @@ export default function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState(INITIAL_USER);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const checkAuth = async () => {
     setIsLoading(true);
     try {
@@ -58,7 +60,10 @@ export default function AuthProvider({ children }) {
     if (_token && _user) {
       setUser(_user);
       setIsAuthenticated(true);
+      navigate({ pathname: location.pathname });
       return;
+    } else {
+      setIsAuthenticated(false);
     }
     checkAuth();
   }, []);

@@ -46,7 +46,7 @@ export default function CommentCard({ comment }) {
       <div className="flex gap-4">
         <div>
           {/* <Avator img={"/images/me_profile.jpg"} /> */}
-          <Avator img={CONSTANTS.publicURL + profileImage} />
+          <Avator img={profileImage} />
         </div>
         <div className="">
           <div className=" flex items-center gap-2">

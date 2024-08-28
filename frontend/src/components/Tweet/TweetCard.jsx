@@ -55,7 +55,8 @@ export default function TweetCard({ tweet }) {
             <img
               className="h-full w-full object-fill"
               // src="/images/profile_img.jpg"
-              src={CONSTANTS.publicURL + profileImage}
+              // src={CONSTANTS.publicURL + profileImage}
+              src={profileImage}
               alt=""
             />
           </div>
@@ -86,7 +87,7 @@ export default function TweetCard({ tweet }) {
             <img
               className="h-full w-full object-fill"
               // src="/images/background-2.jpg"
-              src={CONSTANTS.publicURL + imageUrl}
+              src={imageUrl}
               alt=""
             />
           </div>
