@@ -7,7 +7,7 @@ const { default: mongoose } = require('mongoose');
 const fs = require('node:fs');
 const MulterUpload = require('../middleware/multer');
 const multer = require('multer');
-const { uploadToCloudinary } = require('../utils/cloudinaryUtils');
+const { uploadToCloudinary, removeFromCloudinary } = require('../utils/cloudinaryUtils');
 const { postCommonAggregation } = require('./common');
 
 /**
@@ -20,11 +20,11 @@ const createPost = async (req, res) => {
     MulterUpload.single('image')(req, res, async (err) => {
         const { content, tags, audience } = req.body;
         console.log('POST PAYLOAD >>> ', req.body);
-        if (!content) {
-            return res
-                .status(400)
-                .json({ statusCode: 400, message: 'Content is Required', errors: [] });
-        }
+        // if (!content) {
+        //     return res
+        //         .status(400)
+        //         .json({ statusCode: 400, message: 'Content is Required', errors: [] });
+        // }
         if (err instanceof multer.MulterError) {
             switch (err.code) {
                 case 'LIMIT_UNEXPECTED_FILE':
@@ -41,7 +41,7 @@ const createPost = async (req, res) => {
         }
 
         const newPost = await Post.create({
-            content: content,
+            content: content ?? '',
             audience: audience,
             author: userId,
             tags: tags?.length > 0 ? [...tags.split(',')] : [],
@@ -276,8 +276,37 @@ const getAllTags = async (req, res) => {
     res.status(200).json(new ApiResponse(200, { tags: result }, 'successfully fetched all tags'));
 };
 
+/**
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const deletePost = async (req, res) => {
+    const userId = req.user._id;
+    const { postId } = req.params;
+    isValidMongooseId(postId);
+
+    const targetPost = await Post.findById(postId);
+
+    if (!targetPost) {
+        throw new ApiError(404, 'Post not found');
+    }
+
+    if (targetPost.author.toString() !== userId.toString()) {
+        throw new ApiError(403, 'Access Denied');
+    }
+
+    if (targetPost.imagePublicId) {
+        await removeFromCloudinary(targetPost.imagePublicId, 'tweeter');
+    }
+
+    await Comment.deleteMany({ post: targetPost._id });
+    await Post.deleteOne({ _id: targetPost._id });
+
+    res.status(200).json(new ApiResponse(200, {}, 'successfully deleted'));
+};
+
 // const updatePost = async (req, res) => {};
-// const deletePost = async (req, res) => {};
 
 // const getPostsById = async (req, res) => {};
 // const getPostsByTag = async (req, res) => {};
@@ -289,8 +318,7 @@ module.exports = {
     retweetDetweetPost,
     getAllTags,
     getPosts,
-
-    // deletePost,
+    deletePost,
     // updatePost,
 
     // getPostsById,

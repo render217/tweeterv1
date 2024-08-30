@@ -5,6 +5,7 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
 /* eslint-disable react/prop-types */
 export default function TweetTrend() {
   const { data: axiosResponse, isError, isPending } = useGetAllTags();
@@ -14,10 +15,30 @@ export default function TweetTrend() {
   };
   const outsideModalRef = useOutsideClick(closeShowMore);
   if (isPending && !isError) {
-    return <p>loading..</p>;
+    return (
+      <div className="rounded-md bg-white">
+        <div className="p-4">
+          <p className="text-lg font-medium">Trends for you</p>
+          <hr className="mb-3 mt-2 border" />
+          <div>
+            <LoaderCircle className="mx-auto animate-spin text-clrClearBlue" />
+          </div>
+        </div>
+      </div>
+    );
   }
   if (isError) {
-    return <p>Error</p>;
+    return (
+      <div className="rounded-md bg-white">
+        <div className="p-4">
+          <p className="text-lg font-medium">Trends for you</p>
+          <hr className="mb-3 mt-2 border" />
+          <div>
+            <p className="text-center text-sm">Something went wrong</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

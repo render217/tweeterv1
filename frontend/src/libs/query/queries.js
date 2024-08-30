@@ -23,6 +23,7 @@ import {
   //
   getPosts, // done | filtering,searching remainnig | pagination
   createPost, // done | photo remaining
+  deletePost,
   //
   getUsersPosts,
   //
@@ -188,6 +189,28 @@ export const useCreatePost = () => {
     },
   });
 };
+
+export const useDeletePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (postId) => deletePost(postId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ALL_POSTS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_EXPLORE],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_BOOKMARK_EXPLORE],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ALL_TAGS],
+      });
+    },
+  });
+};
+
 export const useGetUserPosts = () => {
   return useQuery({
     queryKey: [],

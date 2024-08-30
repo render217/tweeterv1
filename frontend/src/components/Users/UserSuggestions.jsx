@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useGetUserSuggestions } from "../../libs/query/queries";
 import UserCard from "./UserCard";
+import { LoaderCircle } from "lucide-react";
 
 export default function UserSuggestions() {
   const { data: axiosResponse, isPending, isError } = useGetUserSuggestions();
@@ -11,7 +12,7 @@ export default function UserSuggestions() {
           <p className="text-lg font-medium">Who to follow</p>
           <hr className="mb-3 mt-2 border " />
           <div className="grid gap-4 max-lg:grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
-            <h1>Loading....</h1>
+            <LoaderCircle className="mx-auto animate-spin text-clrClearBlue" />
           </div>
         </div>
       </div>
@@ -24,7 +25,7 @@ export default function UserSuggestions() {
           <p className="text-lg font-medium">Who to follow</p>
           <hr className="mb-3 mt-2 border " />
           <div className="grid gap-4 max-lg:grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
-            <p>Error</p>
+            <p className="text-sm">Something went wrong :(</p>
           </div>
         </div>
       </div>

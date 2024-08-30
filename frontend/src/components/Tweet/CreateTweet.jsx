@@ -22,7 +22,7 @@ export default function CreateTweet() {
   const [tweet, setTweet] = useState("");
   const [tweetImage, setTweetImage] = useState("");
   //
-
+  const isValidToPost = tweet !== "" || tweetImage !== "";
   const closeOption = () => setShowOption(false);
   const openOption = () => setShowOption(true);
 
@@ -41,8 +41,9 @@ export default function CreateTweet() {
     useCreatePost();
 
   const handleSubmitTweet = async (e) => {
-    if (isCreatingPost) return;
     e.preventDefault();
+
+    if (!isValidToPost || isCreatingPost) return;
 
     const tags = filterForTagFromContent(tweet);
     // console.log("tweet payload", {
@@ -117,7 +118,7 @@ export default function CreateTweet() {
                 <input
                   disabled={isCreatingPost}
                   onChange={(e) => {
-                    console.log(e.target.files[0]);
+                    // console.log(e.target.files[0]);
                     const isValid = checkImageValidity(e.target.files[0].type);
                     if (!isValid) {
                       alert("Image is only allowed");
@@ -198,10 +199,12 @@ export default function CreateTweet() {
                 </button>
               )}
               <button
-                disabled={isCreatingPost}
+                disabled={isCreatingPost || !isValidToPost}
                 type="submit"
                 className={`${
-                  isCreatingPost ? "cursor-not-allowed opacity-40" : ""
+                  isCreatingPost || !isValidToPost
+                    ? "cursor-not-allowed opacity-40"
+                    : ""
                 } w-20  rounded-md bg-clrClearBlue py-2 text-center text-xs text-white `}>
                 {isCreatingPost ? "Tweeting..." : "Tweet"}
               </button>

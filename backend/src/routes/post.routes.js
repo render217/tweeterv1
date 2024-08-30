@@ -8,7 +8,7 @@ const {
     getPosts,
     getAllTags,
 
-    // deletePost,
+    deletePost,
     // updatePost,
 
     // getPostsById,
@@ -22,6 +22,7 @@ router.use(checkAuth);
 
 router.route('/').post(createPost).get(getPosts); // fdone | filtering remaining
 // router.route('/:postId').patch(updatePost).delete(deletePost)
+router.route('/:postId').delete(deletePost);
 router.route('/like/:postId').patch(likeDislikePost); // done
 router.route('/retweet/:postId').patch(retweetDetweetPost); // done
 router.route('/bookmark/:postId').patch(bookmarkUnBookmarkPost); // done

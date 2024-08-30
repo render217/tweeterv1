@@ -15,6 +15,8 @@ import { useAuth } from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
 import CONSTANTS from "../../constants";
+import { EllipsisVertical } from "lucide-react";
+import TweetDeleteOption from "./TweetDeleteOption";
 
 export default function TweetCard({ tweet }) {
   const { user } = useAuth();
@@ -43,7 +45,8 @@ export default function TweetCard({ tweet }) {
 
   const addCommentRef = useRef();
 
-  // const [totalComments, setTotalComments] = useState(0);
+  const isCreator = user._id.toString() === authorId.toString();
+
   return (
     <>
       <RetweetInfo user={user} lastRetweeter={lastRetweeter} />
@@ -70,6 +73,11 @@ export default function TweetCard({ tweet }) {
               {formattedDate || "24 August at 20:43"}
             </p>
           </div>
+          {isCreator && (
+            <div className="ml-auto">
+              <TweetDeleteOption tweetId={postId} />
+            </div>
+          )}
         </div>
 
         {/* Author Info end */}

@@ -14,7 +14,8 @@ export const QUERY_KEYS = {
   // POST_KEYS
   GET_ALL_POSTS: "getAllPosts",
   CREATE_POST: "createPost",
-  // DELETE_POST: "deletePost",
+  DELETE_POST: "deletePost",
+
   // UPDATE_POST: "updatePost",
   GET_USER_POSTS: "getUserPosts",
   LIKE_DISLIKE_POST: "likeDislikePost",

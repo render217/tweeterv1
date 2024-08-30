@@ -67,6 +67,12 @@ export const getPosts = (page) => {
 export const createPost = (payload) => {
   return API.post(`/post`, payload);
 };
+
+// ================ DELETE POST
+export const deletePost = (postId) => {
+  return API.delete(`/post/${postId}`);
+};
+
 // ================ GET USERS POST ------------------- FILTERING......
 export const getUsersPosts = (userId) => {
   return API.get(`/post/all/${userId}`);

@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import { LoaderCircle } from "lucide-react";
 import { useGetComments } from "../../libs/query/queries";
 import Spinner from "../Spinner";
 import CommentCard from "./CommentCard";
@@ -16,8 +17,8 @@ export default function Comments({ postId }) {
 
   if (isPending && !isError) {
     return (
-      <div className="my-5">
-        <p className="text-center">loading...</p>
+      <div className="my-3">
+        <LoaderCircle className="size-3 mx-auto animate-spin text-clrGunSmoke" />
       </div>
     );
   }
@@ -25,7 +26,7 @@ export default function Comments({ postId }) {
   if (isError) {
     return (
       <div className="my-5">
-        <p>error</p>
+        <p className="text-center text-xs">Error loading Comments :(</p>
       </div>
     );
   }
@@ -43,28 +44,20 @@ export default function Comments({ postId }) {
         );
       })}
       {hasNextPage && (
-        <p
+        <div
           onClick={() => fetchNextPage()}
           className="cursor-pointer text-center text-xs hover:underline">
           {isFetchingNextPage ? (
-            <Spinner color="black" size="10px" />
+            <div className="relative mx-auto h-10 w-[95%]">
+              <LoaderCircle className="size-1 absolute left-0 right-0 top-1 mx-auto animate-spin text-clrGunSmoke" />
+            </div>
           ) : (
-            "Load More"
+            <div className="grid h-10 place-content-center">
+              <p className="text-xs">load More</p>
+            </div>
           )}
-        </p>
+        </div>
       )}
     </div>
   );
 }
-
-// function CommentList({ comments }) {
-//   return (
-//     <>
-//       <div className="space-y-4">
-//         {[...comments].map((comment, i) => (
-//           <CommentCard key={i} comment={comment} />
-//         ))}
-//       </div>
-//     </>
-//   );
-// }

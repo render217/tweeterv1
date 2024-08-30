@@ -2,8 +2,8 @@
 import { useCallback, useRef } from "react";
 import { useGetAllPost } from "../../libs/query/queries";
 import TweetCard from "./TweetCard";
-// import { LoadingSpinner } from "../Loading";
-import Spinner from "../Spinner";
+
+import { LoaderCircle } from "lucide-react";
 
 export default function TweetFeed() {
   const {
@@ -14,13 +14,6 @@ export default function TweetFeed() {
     fetchNextPage,
     hasNextPage,
   } = useGetAllPost();
-  console.log({
-    data,
-    isPending,
-    isError,
-    isFetchingNextPage,
-    hasNextPage,
-  });
 
   const observer = useRef(null);
 
@@ -50,16 +43,19 @@ export default function TweetFeed() {
     return (
       <>
         <div className="min-h-[500px]">
-          <h1 className="text-center">Loading...</h1>
+          <div className="grid place-content-center py-2">
+            <LoaderCircle className="animate-spin text-clrClearBlue" />
+          </div>
         </div>
       </>
     );
   }
+
   if (isError) {
     return (
       <>
         <div className="min-h-[500px]">
-          <h1 className="text-center">Error</h1>
+          <h1 className="text-center">Something went wrong {":("}</h1>
         </div>
       </>
     );
@@ -76,22 +72,16 @@ export default function TweetFeed() {
           );
         });
       })}
-      {hasNextPage && <Spinner color="black" size="40px" />}
-      {!hasNextPage && (
-        <p className="mt-10 text-center text-xs">no more content</p>
+      {hasNextPage && (
+        <div className="mt-3 py-2">
+          <LoaderCircle className="mx-auto animate-spin text-clrClearBlue" />
+        </div>
       )}
-      {/* {axiosResponse.data.payload.posts.length === 0 && <h1>NO Tweet Yet.</h1>}
-      <TweetList tweets={axiosResponse.data.payload.posts} /> */}
+      {!hasNextPage && (
+        <p className="mt-5 text-center text-[10px] text-gray-400">
+          no more content
+        </p>
+      )}
     </div>
   );
 }
-
-// function TweetList({ tweets }) {
-//   return (
-//     <>
-//       {tweets.map((tweet) => (
-//         <TweetCard key={tweet._id} tweet={tweet} />
-//       ))}
-//     </>
-//   );
-// }
