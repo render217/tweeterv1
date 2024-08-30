@@ -186,7 +186,8 @@ export default function Profile() {
                     <div className="flex items-center max-sm:flex-col max-sm:gap-2">
                       <div className=" flex items-center max-md:flex-col max-md:items-start max-sm:gap-2 ">
                         <h3 className="w-full text-xl font-semibold max-sm:text-center  max-sm:text-lg  md:mr-5 ">
-                          {username}
+                          {user.username.substring(0, 1).toUpperCase() +
+                            user.username.substring(1)}
                         </h3>
 
                         <div className="flex flex-1 items-center gap-3   max-sm:justify-center">
